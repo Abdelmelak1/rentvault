@@ -1,0 +1,119 @@
+// This is your Prisma schema file
+// Mirrors the existing Supabase PostgreSQL schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String?  @map("password_hash")
+  fullName     String?  @map("full_name")
+  avatarUrl    String?  @map("avatar_url")
+  phone        String?
+  role         Role     @default(user)
+  provider     Provider @default(local)
+  providerId   String?  @map("provider_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  assets  Asset[]
+  rentals Rental[]
+
+  @@map("users")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String   @default("")
+  icon        String   @default("Package")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  assets Asset[]
+
+  @@map("categories")
+}
+
+model Asset {
+  id              String      @id @default(uuid())
+  name            String
+  description     String      @default("")
+  imageUrl        String      @default("") @map("image_url")
+  dailyRate       Decimal     @default(0) @map("daily_rate")
+  weeklyRate      Decimal     @default(0) @map("weekly_rate")
+  monthlyRate     Decimal     @default(0) @map("monthly_rate")
+  securityDeposit Decimal     @default(0) @map("security_deposit")
+  condition       Condition   @default(good)
+  status          AssetStatus @default(available)
+  location        String      @default("")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  ownerId    String   @map("owner_id")
+  owner      User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  categoryId String?  @map("category_id")
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  rentals Rental[]
+
+  @@map("assets")
+}
+
+model Rental {
+  id              String       @id @default(uuid())
+  startDate       DateTime     @map("start_date")
+  endDate         DateTime     @map("end_date")
+  totalPrice      Decimal      @default(0) @map("total_price")
+  securityDeposit Decimal      @default(0) @map("security_deposit")
+  status          RentalStatus @default(pending)
+  notes           String       @default("")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  assetId  String @map("asset_id")
+  asset    Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  renterId String @map("renter_id")
+  renter   User   @relation(fields: [renterId], references: [id], onDelete: Cascade)
+
+  @@map("rentals")
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum Provider {
+  local
+  google
+  github
+}
+
+enum Condition {
+  excellent
+  good
+  fair
+  poor
+}
+
+enum AssetStatus {
+  available
+  rented
+  maintenance
+  retired
+}
+
+enum RentalStatus {
+  pending
+  active
+  completed
+  cancelled
+}
