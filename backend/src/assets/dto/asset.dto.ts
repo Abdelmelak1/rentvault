@@ -6,9 +6,9 @@ import {
   IsArray,
   IsInt,
   Min,
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 
 export class CreateAssetDto {
   @ApiProperty()
@@ -50,6 +50,117 @@ export class CreateAssetDto {
   @IsOptional()
   @IsString()
   color?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  vehicleClass?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  cityMpg?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  highwayMpg?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  combinationMpg?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  cylinders?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  displacement?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  drive?: string;
+
+  // Real estate fields
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  propertyType?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  bedrooms?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  bathrooms?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  areaSqft?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  state?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  zipCode?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  yearBuilt?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  garage?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  hasPool?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  listingStatus?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  price?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -107,14 +218,17 @@ export class CreateAssetDto {
   @Min(0)
   securityDeposit?: number;
 
-  @ApiProperty({ enum: ['excellent', 'good', 'fair', 'poor'], default: 'good' })
+  @ApiProperty({ enum: ["excellent", "good", "fair", "poor"], default: "good" })
   @IsOptional()
-  @IsEnum(['excellent', 'good', 'fair', 'poor'])
+  @IsEnum(["excellent", "good", "fair", "poor"])
   condition?: string;
 
-  @ApiProperty({ enum: ['available', 'maintenance', 'retired'], default: 'available' })
+  @ApiProperty({
+    enum: ["available", "maintenance", "retired"],
+    default: "available",
+  })
   @IsOptional()
-  @IsEnum(['available', 'maintenance', 'retired'])
+  @IsEnum(["available", "maintenance", "retired"])
   status?: string;
 
   @ApiProperty({ required: false })

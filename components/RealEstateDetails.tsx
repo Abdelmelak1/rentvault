@@ -14,6 +14,7 @@ import {
   Waves,
   Tag,
 } from "lucide-react";
+import Link from "next/link";
 
 interface RealEstateDetailsProps {
   property: RealEstateProps;
@@ -117,12 +118,15 @@ function RealEstateDetails({ property, isOpen, onClose }: RealEstateDetailsProps
             ))}
           </div>
 
-          <button
-            onClick={onClose}
-            className="mt-6 w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
-          >
-            Close
-          </button>
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <Link href={`/rentals/create?catalog=real-estate&catalogId=${property.id}`} className="w-full text-center rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white transition-all hover:bg-emerald-500">Rent Property</Link>
+            <button
+              onClick={onClose}
+              className="w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,26 +1,23 @@
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 function getToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('rv_token');
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("rv_token");
 }
 
-async function request<T>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
   const res = await fetch(`${API}${path}`, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message || 'Request failed');
+    throw new Error(err.message || "Request failed");
   }
   const text = await res.text();
   return text ? JSON.parse(text) : ({} as T);
@@ -44,16 +41,16 @@ export interface UserProfile {
 
 export const auth = {
   register: (email: string, password: string, fullName?: string) =>
-    request<AuthResponse>('/auth/register', {
-      method: 'POST',
+    request<AuthResponse>("/auth/register", {
+      method: "POST",
       body: JSON.stringify({ email, password, fullName }),
     }),
   login: (email: string, password: string) =>
-    request<AuthResponse>('/auth/login', {
-      method: 'POST',
+    request<AuthResponse>("/auth/login", {
+      method: "POST",
       body: JSON.stringify({ email, password }),
     }),
-  me: () => request<UserProfile>('/auth/me'),
+  me: () => request<UserProfile>("/auth/me"),
   googleUrl: () => `${API}/auth/google`,
   githubUrl: () => `${API}/auth/github`,
 };
@@ -68,7 +65,7 @@ export interface Category {
   createdAt: string;
 }
 export const categories = {
-  list: () => request<Category[]>('/categories'),
+  list: () => request<Category[]>("/categories"),
 };
 
 // ── Assets ────────────────────────────────────────────────────────────────────
@@ -112,6 +109,13 @@ export interface CreateAssetPayload {
   fuelType?: string;
   seats?: number;
   images?: string[];
+  vehicleClass?: string;
+  cityMpg?: number;
+  highwayMpg?: number;
+  combinationMpg?: number;
+  cylinders?: number;
+  displacement?: number;
+  drive?: string;
   // Real estate fields
   propertyType?: string;
   bedrooms?: number;
@@ -122,25 +126,38 @@ export interface CreateAssetPayload {
   state?: string;
   zipCode?: string;
   amenities?: string[];
+  listingStatus?: string;
+  price?: number;
+  yearBuilt?: number;
+  garage?: number;
+  hasPool?: boolean;
 }
 export const assets = {
-  list: (params?: { status?: string; categorySlug?: string; search?: string }) => {
+  list: (params?: {
+    status?: string;
+    categorySlug?: string;
+    search?: string;
+  }) => {
     const q = new URLSearchParams(params as Record<string, string>).toString();
-    return request<Asset[]>(`/assets${q ? `?${q}` : ''}`);
+    return request<Asset[]>(`/assets${q ? `?${q}` : ""}`);
   },
   mine: (params?: { status?: string; search?: string }) => {
     const q = new URLSearchParams(params as Record<string, string>).toString();
-    return request<Asset[]>(`/assets/mine${q ? `?${q}` : ''}`);
+    return request<Asset[]>(`/assets/mine${q ? `?${q}` : ""}`);
   },
   get: (id: string) => request<Asset>(`/assets/${id}`),
   create: (payload: CreateAssetPayload) =>
-    request<Asset>('/assets', { method: 'POST', body: JSON.stringify(payload) }),
+    request<Asset>("/assets", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   uploadImages: (files: File[]) => {
     const form = new FormData();
-    files.forEach((f) => form.append('images', f, f.name));
-    const token = typeof window !== 'undefined' ? localStorage.getItem('rv_token') : null;
+    files.forEach((f) => form.append("images", f, f.name));
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("rv_token") : null;
     return fetch(`${API}/assets/upload`, {
-      method: 'POST',
+      method: "POST",
       body: form,
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -148,15 +165,18 @@ export const assets = {
     }).then(async (res) => {
       if (!res.ok) {
         const err = await res.json().catch(() => ({ message: res.statusText }));
-        throw new Error(err.message || 'Upload failed');
+        throw new Error(err.message || "Upload failed");
       }
       return res.json();
     });
   },
   update: (id: string, payload: Partial<CreateAssetPayload>) =>
-    request<Asset>(`/assets/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
+    request<Asset>(`/assets/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
   remove: (id: string) =>
-    request<{ message: string }>(`/assets/${id}`, { method: 'DELETE' }),
+    request<{ message: string }>(`/assets/${id}`, { method: "DELETE" }),
 };
 
 // ── Rentals ───────────────────────────────────────────────────────────────────
@@ -172,16 +192,29 @@ export interface Rental {
   notes: string;
   createdAt: string;
   updatedAt: string;
-  asset?: { name: string; imageUrl: string; dailyRate: string; location?: string };
+  asset?: {
+    name: string;
+    imageUrl: string;
+    dailyRate: string;
+    location?: string;
+  };
 }
 export const rentals = {
-  list: () => request<Rental[]>('/rentals'),
+  list: () => request<Rental[]>("/rentals"),
   get: (id: string) => request<Rental>(`/rentals/${id}`),
-  create: (payload: { assetId: string; startDate: string; endDate: string; notes?: string }) =>
-    request<Rental>('/rentals', { method: 'POST', body: JSON.stringify(payload) }),
+  create: (payload: {
+    assetId: string;
+    startDate: string;
+    endDate: string;
+    notes?: string;
+  }) =>
+    request<Rental>("/rentals", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   updateStatus: (id: string, status: string) =>
     request<Rental>(`/rentals/${id}/status`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify({ status }),
     }),
 };

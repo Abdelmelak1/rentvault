@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import CustomFilter from "@/components/CustomFilter";
 import RealEstateCard from "@/components/RealEstateCard";
 import RealEstateDetails from "@/components/RealEstateDetails";
 import ShowMore from "@/components/ShowMore";
 import { realEstateData } from "@/data/real-estate";
+import { assets as assetApi } from "@/lib/api";
 import { RealEstateProps, RealEstateFilterProps } from "@/types/real-estate";
 import { filterRealEstate } from "@/utils/real-estate";
 import {
@@ -32,10 +33,42 @@ export default function RealEstatePage() {
 
   const [selectedProperty, setSelectedProperty] = useState<RealEstateProps | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [remoteProperties, setRemoteProperties] = useState<RealEstateProps[]>([]);
 
+  useEffect(() => {
+    let mounted = true;
+    assetApi
+      .list({ categorySlug: "real-estate", status: "available" })
+      .then((as) => {
+        if (!mounted) return;
+        const mapped = as.map((a: any) => ({
+          id: a.id,
+          title: a.name || "Property",
+          type: a.propertyType || a.type || "",
+          price: Number(a.monthlyRate || a.price || 0),
+          bedrooms: a.bedrooms || 0,
+          bathrooms: a.bathrooms || 0,
+          area: a.areaSqft || 0,
+          city: a.city || a.location?.split(',')[0] || "",
+          state: a.state || "",
+          address: a.address || "",
+          yearBuilt: a.yearBuilt || 0,
+          garage: a.garage || 0,
+          hasPool: a.hasPool || false,
+          listingStatus: a.status || "for-rent",
+          description: a.description || "",
+          imageUrl: a.imageUrl || a.images?.[0] || undefined,
+        })) as RealEstateProps[];
+        setRemoteProperties(mapped);
+      })
+      .catch(() => {});
+    return () => { mounted = false; };
+  }, []);
+
+  const mergedProperties = useMemo(() => [...remoteProperties, ...realEstateData], [remoteProperties]);
   const filteredProperties = useMemo(
-    () => filterRealEstate(realEstateData, filters),
-    [filters]
+    () => filterRealEstate(mergedProperties, filters),
+    [mergedProperties, filters]
   );
 
   const displayedProperties = useMemo(
@@ -76,11 +109,11 @@ export default function RealEstatePage() {
     setIsDetailsOpen(true);
   };
 
-  const totalProperties = realEstateData.length;
-  const forSaleCount = realEstateData.filter((p) => p.listingStatus === "for-sale").length;
-  const forRentCount = realEstateData.filter((p) => p.listingStatus === "for-rent").length;
+  const totalProperties = mergedProperties.length;
+  const forSaleCount = mergedProperties.filter((p) => p.listingStatus === "for-sale").length;
+  const forRentCount = mergedProperties.filter((p) => p.listingStatus === "for-rent").length;
   const avgPrice = Math.round(
-    realEstateData.reduce((sum, p) => sum + p.price, 0) / totalProperties
+    mergedProperties.reduce((sum, p) => sum + p.price, 0) / Math.max(1, mergedProperties.length)
   );
 
   return (

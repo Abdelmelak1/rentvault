@@ -25,6 +25,22 @@ export class RentalsService {
     const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     const totalPrice = Number(asset.dailyRate) * days;
 
+    // Check for overlapping rentals (pending or active)
+    const overlapping = await this.prisma.rental.findFirst({
+      where: {
+        assetId: dto.assetId,
+        status: { in: ['pending', 'active'] },
+        AND: [
+          { startDate: { lte: end } },
+          { endDate: { gte: start } },
+        ],
+      },
+    });
+
+    if (overlapping) {
+      throw new BadRequestException('Asset is already booked for the selected dates');
+    }
+
     const rental = await this.prisma.rental.create({
       data: {
         assetId: dto.assetId,
@@ -48,7 +64,33 @@ export class RentalsService {
     return this.prisma.rental.findMany({
       where: { renterId },
       include: {
-        asset: { select: { name: true, imageUrl: true, dailyRate: true, location: true } },
+        asset: {
+          select: {
+            name: true,
+            imageUrl: true,
+            dailyRate: true,
+            location: true,
+            description: true,
+            condition: true,
+            // vehicle fields
+            make: true,
+            model: true,
+            year: true,
+            mileage: true,
+            transmission: true,
+            fuelType: true,
+            seats: true,
+            // real-estate fields
+            propertyType: true,
+            bedrooms: true,
+            bathrooms: true,
+            address: true,
+            city: true,
+            state: true,
+            // include category slug to distinguish type
+            category: { select: { slug: true } },
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });

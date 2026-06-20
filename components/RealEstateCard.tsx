@@ -4,6 +4,7 @@ import { RealEstateProps } from "@/types/real-estate";
 import { formatPrice, formatPropertyType } from "@/utils/real-estate";
 import { REAL_ESTATE_IMAGE } from "@/constants/real-estate";
 import { Bed, Bath, Maximize, MapPin, Chrome as Home } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface RealEstateCardProps {
   property: RealEstateProps;
@@ -11,13 +12,16 @@ interface RealEstateCardProps {
 }
 
 function RealEstateCard({ property, onViewDetails }: RealEstateCardProps) {
-  const { price, bedrooms, bathrooms, area, city, state, type, listingStatus, title } = property;
+  const router = useRouter();
+  const { price, bedrooms, bathrooms, area, city, state, listingStatus, title } = property;
+  const rawType = (property as any).type || (property as any).propertyType || "";
+  const type = rawType;
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-slate-300 hover:-translate-y-1">
       <div className="relative h-48 w-full overflow-hidden bg-slate-100">
         <img
-          src={REAL_ESTATE_IMAGE}
+          src={property.imageUrl || REAL_ESTATE_IMAGE}
           alt={title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -74,12 +78,20 @@ function RealEstateCard({ property, onViewDetails }: RealEstateCardProps) {
           </div>
         </div>
 
-        <button
-          onClick={() => onViewDetails(property)}
-          className="mt-auto w-full rounded-xl bg-slate-900 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
-        >
-          View Details
-        </button>
+        <div className="mt-auto flex gap-2">
+          <button
+            onClick={() => onViewDetails(property)}
+            className="flex-1 rounded-xl bg-slate-900 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
+          >
+            View Details
+          </button>
+          <button
+            onClick={() => router.push(`/rentals/create?catalog=real-estate&catalogId=${property.id}`)}
+            className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
+          >
+            Rent
+          </button>
+        </div>
       </div>
     </div>
   );

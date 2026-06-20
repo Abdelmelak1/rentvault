@@ -14,6 +14,7 @@ import {
   Settings2,
   Car,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CarCardProps {
   car: CarProps;
@@ -21,6 +22,7 @@ interface CarCardProps {
 }
 
 function CarCard({ car, onViewDetails }: CarCardProps) {
+  const router = useRouter();
   const {
     city_mpg,
     year,
@@ -39,7 +41,7 @@ function CarCard({ car, onViewDetails }: CarCardProps) {
     <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-slate-300 hover:-translate-y-1">
       <div className="relative h-48 w-full overflow-hidden bg-slate-100">
         <img
-          src={CAR_IMAGE_PLACEHOLDER}
+          src={car.imageUrl || CAR_IMAGE_PLACEHOLDER}
           alt={`${make} ${model}`}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -110,12 +112,20 @@ function CarCard({ car, onViewDetails }: CarCardProps) {
           </div>
         </div>
 
-        <button
-          onClick={() => onViewDetails(car)}
-          className="mt-auto w-full rounded-xl bg-slate-900 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
-        >
-          View Details
-        </button>
+        <div className="mt-auto flex gap-2">
+          <button
+            onClick={() => onViewDetails(car)}
+            className="flex-1 rounded-xl bg-slate-900 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
+          >
+            View Details
+          </button>
+          <button
+            onClick={() => router.push(`/rentals/create?catalog=cars&catalogId=${car.id}`)}
+            className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
+          >
+            Rent
+          </button>
+        </div>
       </div>
     </div>
   );

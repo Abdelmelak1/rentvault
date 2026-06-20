@@ -24,9 +24,27 @@ export declare class RentalsService {
     }>;
     findMyRentals(renterId: string): Promise<({
         asset: {
+            category: {
+                slug: string;
+            };
             name: string;
+            description: string;
+            state: string;
             imageUrl: string;
+            make: string;
+            model: string;
+            year: number;
+            propertyType: string;
+            bedrooms: number;
+            bathrooms: number;
+            address: string;
+            city: string;
+            mileage: number;
+            transmission: string;
+            fuelType: string;
+            seats: number;
             dailyRate: import("@prisma/client/runtime/library").Decimal;
+            condition: import(".prisma/client").$Enums.Condition;
             location: string;
         };
     } & {
@@ -70,6 +88,26 @@ export declare class RentalsService {
             transmission: string | null;
             fuelType: string | null;
             seats: number | null;
+            vehicleClass: string | null;
+            cityMpg: number | null;
+            highwayMpg: number | null;
+            combinationMpg: number | null;
+            cylinders: number | null;
+            displacement: number | null;
+            drive: string | null;
+            propertyType: string | null;
+            bedrooms: number | null;
+            bathrooms: number | null;
+            areaSqft: number | null;
+            address: string | null;
+            city: string | null;
+            state: string | null;
+            zipCode: string | null;
+            yearBuilt: number | null;
+            garage: number | null;
+            hasPool: boolean | null;
+            listingStatus: string | null;
+            price: import("@prisma/client/runtime/library").Decimal | null;
             images: string[];
             dailyRate: import("@prisma/client/runtime/library").Decimal;
             weeklyRate: import("@prisma/client/runtime/library").Decimal;

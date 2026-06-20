@@ -37,7 +37,7 @@ export class AssetsController {
     FilesInterceptor("images", 10, {
       storage: diskStorage({
         destination: (req, file, cb) => {
-          cb(null, join(process.cwd(), 'uploads'));
+          cb(null, join(process.cwd(), "uploads"));
         },
         filename: (req, file, cb) => {
           const uniqueSuffix =
@@ -51,13 +51,15 @@ export class AssetsController {
   async uploadFiles(@Request() req, @UploadedFiles() files: any[]) {
     // Log filenames and sizes for debugging
     if (files && files.length > 0) {
-      console.log('Uploaded files:');
-      files.forEach((f) => console.log(` - ${f.originalname} -> ${f.filename} (${f.size} bytes)`));
+      console.log("Uploaded files:");
+      files.forEach((f) =>
+        console.log(` - ${f.originalname} -> ${f.filename} (${f.size} bytes)`),
+      );
     } else {
-      console.log('No files received in uploadFiles');
+      console.log("No files received in uploadFiles");
     }
 
-    const host = req.protocol + '://' + req.get('host');
+    const host = req.protocol + "://" + req.get("host");
     const urls = (files || []).map((f) => `${host}/uploads/${f.filename}`);
     return { urls };
   }

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import SearchBar from "@/components/SearchBar";
 import CustomFilter from "@/components/CustomFilter";
 import CarCard from "@/components/CarCard";
 import CarDetails from "@/components/CarDetails";
 import ShowMore from "@/components/ShowMore";
 import { carsData } from "@/data/cars";
+import { assets as assetApi } from "@/lib/api";
 import { CarProps, FilterProps } from "@/types";
 import { filterCars, generatePaginationArray } from "@/utils";
 import {
@@ -34,8 +35,39 @@ export default function CarsPage() {
 
   const [selectedCar, setSelectedCar] = useState<CarProps | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [remoteCars, setRemoteCars] = useState<CarProps[]>([]);
 
-  const filteredCars = useMemo(() => filterCars(carsData, filters), [filters]);
+  // Fetch user-created vehicle assets and map into CarProps shape
+  useEffect(() => {
+    let mounted = true;
+    assetApi
+      .list({ categorySlug: "vehicles", status: "available" })
+      .then((as) => {
+        if (!mounted) return;
+        const mapped = as.map((a: any) => ({
+          id: a.id,
+          city_mpg: a.city_mpg || 0,
+          class: a.description || "User Asset",
+          combination_mpg: a.combination_mpg || 0,
+          cylinders: a.cylinders || 0,
+          displacement: a.displacement || 0,
+          drive: a.drive || "",
+          fuel_type: (a.fuelType || a.fuel_type) || "gasoline",
+          highway_mpg: a.highway_mpg || 0,
+          make: a.make || "",
+          model: a.model || "",
+          transmission: a.transmission || "",
+          year: a.year || 0,
+          imageUrl: a.imageUrl || a.images?.[0] || undefined,
+        })) as CarProps[];
+        setRemoteCars(mapped);
+      })
+      .catch(() => {});
+    return () => { mounted = false; };
+  }, []);
+
+  const mergedCars = useMemo(() => [...remoteCars, ...carsData], [remoteCars]);
+  const filteredCars = useMemo(() => filterCars(mergedCars, filters), [mergedCars, filters]);
   const displayedCars = useMemo(
     () => generatePaginationArray(filteredCars, filters.limit),
     [filteredCars, filters.limit]
@@ -74,12 +106,12 @@ export default function CarsPage() {
     setIsDetailsOpen(true);
   };
 
-  const totalCars = carsData.length;
+  const totalCars = mergedCars.length;
   const avgMpg = Math.round(
-    carsData.reduce((sum, c) => sum + c.combination_mpg, 0) / totalCars
+    mergedCars.reduce((sum, c) => sum + c.combination_mpg, 0) / Math.max(1, mergedCars.length)
   );
-  const electricCount = carsData.filter((c) => c.fuel_type === "electricity").length;
-  const hybridCount = carsData.filter((c) => c.fuel_type === "hybrid").length;
+  const electricCount = mergedCars.filter((c) => c.fuel_type === "electricity").length;
+  const hybridCount = mergedCars.filter((c) => c.fuel_type === "hybrid").length;
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8">

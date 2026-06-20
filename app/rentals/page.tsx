@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { rentals as rentalApi, Rental } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { CalendarCheck, Clock, CircleCheck as CheckCircle2, Circle as XCircle, CircleAlert as AlertCircle, Search, LogIn } from "lucide-react";
+import { CalendarCheck, Clock, CircleCheck as CheckCircle2, Circle as XCircle, CircleAlert as AlertCircle, Search, LogIn, MapPin, Tag } from "lucide-react";
 import Link from "next/link";
 
 export default function MyRentalsPage() {
@@ -119,25 +119,50 @@ export default function MyRentalsPage() {
       ) : (
         <div className="space-y-3">
           {filtered.map((rental) => (
-            <div key={rental.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
-              <div className="flex items-start gap-4">
-                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
-                  {rental.asset?.imageUrl ? <img src={rental.asset.imageUrl} alt={rental.asset.name} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center"><CalendarCheck className="h-5 w-5 text-slate-400" /></div>}
+            <div key={rental.id} className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-slate-300 hover:-translate-y-1">
+              <div className="relative h-48 w-full overflow-hidden bg-slate-100">
+                {rental.asset?.imageUrl ? (
+                  <img src={rental.asset.imageUrl} alt={rental.asset?.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center"><CalendarCheck className="h-10 w-10 text-slate-300" /></div>
+                )}
+                <div className="absolute top-3 left-3">
+                  <span className="inline-flex items-center rounded-full bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+                    {rental.asset?.name || "Asset"}
+                  </span>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="truncate text-sm font-semibold text-slate-900">{rental.asset?.name || "Asset"}</h3>
-                    <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${statusColor(rental.status)}`}>
-                      {statusIcon(rental.status)}{rental.status}
-                    </span>
-                  </div>
-                  <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-500 sm:grid-cols-4">
-                    <div><span className="font-medium text-slate-600">Start:</span> {formatDate(rental.startDate)}</div>
-                    <div><span className="font-medium text-slate-600">End:</span> {formatDate(rental.endDate)}</div>
-                    <div><span className="font-medium text-slate-600">Duration:</span> {daysBetween(rental.startDate, rental.endDate)} days</div>
-                    <div><span className="font-medium text-slate-600">Total:</span> ${Number(rental.totalPrice).toFixed(2)}</div>
-                  </div>
-                  {rental.notes && <p className="mt-2 text-xs text-slate-400 italic">{rental.notes}</p>}
+                <div className="absolute bottom-3 right-3">
+                  <span className="inline-flex items-center rounded-full bg-slate-900/90 backdrop-blur-sm px-3 py-1.5 text-sm font-bold text-white shadow-sm">
+                    ${Number(rental.asset?.dailyRate || 0).toFixed(0)}/day
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="text-base font-bold text-slate-900 leading-tight line-clamp-1">{rental.asset?.name}</h3>
+                <div className="mt-2 text-sm text-slate-600">
+                  {(() => {
+                    const a: any = rental.asset as any;
+                    if (a?.make) return <div className="text-sm font-medium">{a.make} {a.model} • {a.year}</div>;
+                    if (a?.propertyType) return <div className="text-sm font-medium">{a.propertyType} • {a.bedrooms}bd • {a.bathrooms}ba</div>;
+                    return null;
+                  })()}
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                  {rental.asset?.location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3 text-slate-400" />{rental.asset.location}</span>}
+                  <span className="flex items-center gap-1"><Tag className="h-3 w-3 text-slate-400" />{(rental.asset as any)?.condition || "Good"}</span>
+                </div>
+                {rental.asset?.description && <p className="mt-2 text-xs text-slate-500 line-clamp-2">{rental.asset.description}</p>}
+
+                <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-500 sm:grid-cols-4 border-t border-slate-100 pt-3">
+                  <div><span className="font-medium text-slate-600">Start:</span> {formatDate(rental.startDate)}</div>
+                  <div><span className="font-medium text-slate-600">End:</span> {formatDate(rental.endDate)}</div>
+                  <div><span className="font-medium text-slate-600">Duration:</span> {daysBetween(rental.startDate, rental.endDate)} days</div>
+                  <div><span className="font-medium text-slate-600">Total:</span> ${Number(rental.totalPrice).toFixed(2)}</div>
+                </div>
+
+                <div className="mt-3 flex items-center gap-2">
+                  <a href={`/rentals/${rental.id}`} className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">View Details</a>
                 </div>
               </div>
             </div>

@@ -22,8 +22,8 @@ let AssetsService = class AssetsService {
             where.status = query.status;
         if (query.search) {
             where.OR = [
-                { name: { contains: query.search, mode: 'insensitive' } },
-                { location: { contains: query.search, mode: 'insensitive' } },
+                { name: { contains: query.search, mode: "insensitive" } },
+                { location: { contains: query.search, mode: "insensitive" } },
             ];
         }
         if (query.categorySlug) {
@@ -32,7 +32,7 @@ let AssetsService = class AssetsService {
         return this.prisma.asset.findMany({
             where,
             include: { category: { select: { name: true, slug: true } } },
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
         });
     }
     async findByOwner(ownerId, query) {
@@ -41,14 +41,14 @@ let AssetsService = class AssetsService {
             where.status = query.status;
         if (query.search) {
             where.OR = [
-                { name: { contains: query.search, mode: 'insensitive' } },
-                { location: { contains: query.search, mode: 'insensitive' } },
+                { name: { contains: query.search, mode: "insensitive" } },
+                { location: { contains: query.search, mode: "insensitive" } },
             ];
         }
         return this.prisma.asset.findMany({
             where,
             include: { category: { select: { name: true, slug: true } } },
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
         });
     }
     async findOne(id) {
@@ -56,19 +56,21 @@ let AssetsService = class AssetsService {
             where: { id },
             include: {
                 category: { select: { name: true, slug: true } },
-                owner: { select: { id: true, fullName: true, email: true, avatarUrl: true } },
+                owner: {
+                    select: { id: true, fullName: true, email: true, avatarUrl: true },
+                },
             },
         });
         if (!asset)
-            throw new common_1.NotFoundException('Asset not found');
+            throw new common_1.NotFoundException("Asset not found");
         return asset;
     }
     async create(ownerId, dto) {
         return this.prisma.asset.create({
             data: {
                 name: dto.name,
-                description: dto.description || '',
-                imageUrl: dto.imageUrl || '',
+                description: dto.description || "",
+                imageUrl: dto.imageUrl || "",
                 make: dto.make || null,
                 model: dto.model || null,
                 year: dto.year || null,
@@ -82,11 +84,31 @@ let AssetsService = class AssetsService {
                 weeklyRate: dto.weeklyRate || 0,
                 monthlyRate: dto.monthlyRate || 0,
                 securityDeposit: dto.securityDeposit || 0,
-                condition: dto.condition || 'good',
-                status: dto.status || 'available',
-                location: dto.location || '',
+                condition: dto.condition || "good",
+                status: dto.status || "available",
+                location: dto.location || "",
                 ownerId,
                 categoryId: dto.categoryId || null,
+                vehicleClass: dto.vehicleClass || null,
+                cityMpg: dto.cityMpg || null,
+                highwayMpg: dto.highwayMpg || null,
+                combinationMpg: dto.combinationMpg || null,
+                cylinders: dto.cylinders || null,
+                displacement: dto.displacement || null,
+                drive: dto.drive || null,
+                propertyType: dto.propertyType || null,
+                bedrooms: dto.bedrooms || null,
+                bathrooms: dto.bathrooms || null,
+                areaSqft: dto.areaSqft || null,
+                address: dto.address || null,
+                city: dto.city || null,
+                state: dto.state || null,
+                zipCode: dto.zipCode || null,
+                yearBuilt: dto.yearBuilt || null,
+                garage: dto.garage || null,
+                hasPool: dto.hasPool || null,
+                listingStatus: dto.listingStatus || null,
+                price: dto.price || 0,
             },
             include: { category: { select: { name: true, slug: true } } },
         });
@@ -102,7 +124,9 @@ let AssetsService = class AssetsService {
                 ...(dto.year !== undefined && { year: dto.year }),
                 ...(dto.color !== undefined && { color: dto.color }),
                 ...(dto.mileage !== undefined && { mileage: dto.mileage }),
-                ...(dto.transmission !== undefined && { transmission: dto.transmission }),
+                ...(dto.transmission !== undefined && {
+                    transmission: dto.transmission,
+                }),
                 ...(dto.fuelType !== undefined && { fuelType: dto.fuelType }),
                 ...(dto.seats !== undefined && { seats: dto.seats }),
                 ...(dto.images !== undefined && { images: dto.images }),
@@ -111,11 +135,33 @@ let AssetsService = class AssetsService {
                 ...(dto.dailyRate !== undefined && { dailyRate: dto.dailyRate }),
                 ...(dto.weeklyRate !== undefined && { weeklyRate: dto.weeklyRate }),
                 ...(dto.monthlyRate !== undefined && { monthlyRate: dto.monthlyRate }),
-                ...(dto.securityDeposit !== undefined && { securityDeposit: dto.securityDeposit }),
+                ...(dto.securityDeposit !== undefined && {
+                    securityDeposit: dto.securityDeposit,
+                }),
                 ...(dto.condition && { condition: dto.condition }),
                 ...(dto.status && { status: dto.status }),
                 ...(dto.location !== undefined && { location: dto.location }),
                 ...(dto.categoryId !== undefined && { categoryId: dto.categoryId }),
+                ...(dto.vehicleClass !== undefined && { vehicleClass: dto.vehicleClass }),
+                ...(dto.cityMpg !== undefined && { cityMpg: dto.cityMpg }),
+                ...(dto.highwayMpg !== undefined && { highwayMpg: dto.highwayMpg }),
+                ...(dto.combinationMpg !== undefined && { combinationMpg: dto.combinationMpg }),
+                ...(dto.cylinders !== undefined && { cylinders: dto.cylinders }),
+                ...(dto.displacement !== undefined && { displacement: dto.displacement }),
+                ...(dto.drive !== undefined && { drive: dto.drive }),
+                ...(dto.propertyType !== undefined && { propertyType: dto.propertyType }),
+                ...(dto.bedrooms !== undefined && { bedrooms: dto.bedrooms }),
+                ...(dto.bathrooms !== undefined && { bathrooms: dto.bathrooms }),
+                ...(dto.areaSqft !== undefined && { areaSqft: dto.areaSqft }),
+                ...(dto.address !== undefined && { address: dto.address }),
+                ...(dto.city !== undefined && { city: dto.city }),
+                ...(dto.state !== undefined && { state: dto.state }),
+                ...(dto.zipCode !== undefined && { zipCode: dto.zipCode }),
+                ...(dto.yearBuilt !== undefined && { yearBuilt: dto.yearBuilt }),
+                ...(dto.garage !== undefined && { garage: dto.garage }),
+                ...(dto.hasPool !== undefined && { hasPool: dto.hasPool }),
+                ...(dto.listingStatus !== undefined && { listingStatus: dto.listingStatus }),
+                ...(dto.price !== undefined && { price: dto.price }),
             },
             include: { category: { select: { name: true, slug: true } } },
         });
@@ -123,14 +169,16 @@ let AssetsService = class AssetsService {
     async remove(id, userId) {
         await this.verifyOwner(id, userId);
         await this.prisma.asset.delete({ where: { id } });
-        return { message: 'Asset deleted' };
+        return { message: "Asset deleted" };
     }
     async verifyOwner(assetId, userId) {
-        const asset = await this.prisma.asset.findUnique({ where: { id: assetId } });
+        const asset = await this.prisma.asset.findUnique({
+            where: { id: assetId },
+        });
         if (!asset)
-            throw new common_1.NotFoundException('Asset not found');
+            throw new common_1.NotFoundException("Asset not found");
         if (asset.ownerId !== userId)
-            throw new common_1.ForbiddenException('Not your asset');
+            throw new common_1.ForbiddenException("Not your asset");
         return asset;
     }
 };

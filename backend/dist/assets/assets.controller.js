@@ -30,13 +30,13 @@ let AssetsController = class AssetsController {
     }
     async uploadFiles(req, files) {
         if (files && files.length > 0) {
-            console.log('Uploaded files:');
+            console.log("Uploaded files:");
             files.forEach((f) => console.log(` - ${f.originalname} -> ${f.filename} (${f.size} bytes)`));
         }
         else {
-            console.log('No files received in uploadFiles');
+            console.log("No files received in uploadFiles");
         }
-        const host = req.protocol + '://' + req.get('host');
+        const host = req.protocol + "://" + req.get("host");
         const urls = (files || []).map((f) => `${host}/uploads/${f.filename}`);
         return { urls };
     }
@@ -71,7 +71,7 @@ __decorate([
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)("images", 10, {
         storage: (0, multer_1.diskStorage)({
             destination: (req, file, cb) => {
-                cb(null, (0, path_1.join)(process.cwd(), 'uploads'));
+                cb(null, (0, path_1.join)(process.cwd(), "uploads"));
             },
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);

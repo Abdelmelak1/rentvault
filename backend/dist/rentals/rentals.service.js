@@ -28,6 +28,19 @@ let RentalsService = class RentalsService {
             throw new common_1.BadRequestException('End date must be after start date');
         const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
         const totalPrice = Number(asset.dailyRate) * days;
+        const overlapping = await this.prisma.rental.findFirst({
+            where: {
+                assetId: dto.assetId,
+                status: { in: ['pending', 'active'] },
+                AND: [
+                    { startDate: { lte: end } },
+                    { endDate: { gte: start } },
+                ],
+            },
+        });
+        if (overlapping) {
+            throw new common_1.BadRequestException('Asset is already booked for the selected dates');
+        }
         const rental = await this.prisma.rental.create({
             data: {
                 assetId: dto.assetId,
@@ -49,7 +62,30 @@ let RentalsService = class RentalsService {
         return this.prisma.rental.findMany({
             where: { renterId },
             include: {
-                asset: { select: { name: true, imageUrl: true, dailyRate: true, location: true } },
+                asset: {
+                    select: {
+                        name: true,
+                        imageUrl: true,
+                        dailyRate: true,
+                        location: true,
+                        description: true,
+                        condition: true,
+                        make: true,
+                        model: true,
+                        year: true,
+                        mileage: true,
+                        transmission: true,
+                        fuelType: true,
+                        seats: true,
+                        propertyType: true,
+                        bedrooms: true,
+                        bathrooms: true,
+                        address: true,
+                        city: true,
+                        state: true,
+                        category: { select: { slug: true } },
+                    },
+                },
             },
             orderBy: { createdAt: 'desc' },
         });

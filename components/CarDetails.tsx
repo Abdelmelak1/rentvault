@@ -20,6 +20,7 @@ import {
   Cylinder,
   Route,
 } from "lucide-react";
+import Link from "next/link";
 
 interface CarDetailsProps {
   car: CarProps;
@@ -123,12 +124,15 @@ function CarDetails({ car, isOpen, onClose }: CarDetailsProps) {
             ))}
           </div>
 
-          <button
-            onClick={onClose}
-            className="mt-6 w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
-          >
-            Close
-          </button>
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <Link href={`/rentals/create?catalog=cars&catalogId=${car.id}`} className="w-full text-center rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white transition-all hover:bg-emerald-500">Rent Vehicle</Link>
+            <button
+              onClick={onClose}
+              className="w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -14,6 +14,7 @@ export interface RealEstateProps {
   hasPool: boolean;
   listingStatus: string;
   description: string;
+  imageUrl?: string;
 }
 
 export interface RealEstateFilterProps {

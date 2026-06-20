@@ -8,10 +8,10 @@ const path_1 = require("path");
 const fs = require("fs");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    const uploadsDir = (0, path_1.join)(process.cwd(), 'uploads');
+    const uploadsDir = (0, path_1.join)(process.cwd(), "uploads");
     if (!fs.existsSync(uploadsDir))
         fs.mkdirSync(uploadsDir, { recursive: true });
-    app.useStaticAssets(uploadsDir, { prefix: '/uploads' });
+    app.useStaticAssets(uploadsDir, { prefix: "/uploads" });
     app.enableCors({
         origin: process.env.FRONTEND_URL || "http://localhost:3000",
         credentials: true,
