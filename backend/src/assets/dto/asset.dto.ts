@@ -3,6 +3,8 @@ import {
   IsOptional,
   IsNumber,
   IsEnum,
+  IsArray,
+  IsInt,
   Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -27,6 +29,55 @@ export class CreateAssetDto {
   @IsOptional()
   @IsString()
   imageUrl?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  make?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  model?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  year?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  color?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  mileage?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  transmission?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  fuelType?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  seats?: number;
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  images?: string[];
 
   @ApiProperty({ default: 0 })
   @IsOptional()

@@ -4,8 +4,14 @@ const core_1 = require("@nestjs/core");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const app_module_1 = require("./app.module");
+const path_1 = require("path");
+const fs = require("fs");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const uploadsDir = (0, path_1.join)(process.cwd(), 'uploads');
+    if (!fs.existsSync(uploadsDir))
+        fs.mkdirSync(uploadsDir, { recursive: true });
+    app.useStaticAssets(uploadsDir, { prefix: '/uploads' });
     app.enableCors({
         origin: process.env.FRONTEND_URL || "http://localhost:3000",
         credentials: true,
@@ -15,7 +21,7 @@ async function bootstrap() {
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
         transform: true,
-        forbidNonWhitelisted: true,
+        forbidNonWhitelisted: false,
     }));
     app.setGlobalPrefix("api");
     const config = new swagger_1.DocumentBuilder()

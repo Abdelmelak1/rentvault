@@ -1437,7 +1437,7 @@ export const carsData: CarProps[] = [
     fuel_type: "electricity",
     highway_mpg: 98,
     make: "Chevrolet",
-    model: "Chevrolet EV",
+    model: "Chevrolet  EV",
     transmission: "a",
     year: 2023,
   },

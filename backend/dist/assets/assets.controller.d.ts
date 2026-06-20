@@ -1,5 +1,5 @@
-import { AssetsService } from './assets.service';
-import { CreateAssetDto, UpdateAssetDto, AssetQueryDto } from './dto/asset.dto';
+import { AssetsService } from "./assets.service";
+import { CreateAssetDto, UpdateAssetDto, AssetQueryDto } from "./dto/asset.dto";
 export declare class AssetsController {
     private service;
     constructor(service: AssetsService);
@@ -13,6 +13,15 @@ export declare class AssetsController {
         name: string;
         description: string;
         imageUrl: string;
+        make: string | null;
+        model: string | null;
+        year: number | null;
+        color: string | null;
+        mileage: number | null;
+        transmission: string | null;
+        fuelType: string | null;
+        seats: number | null;
+        images: string[];
         dailyRate: import("@prisma/client/runtime/library").Decimal;
         weeklyRate: import("@prisma/client/runtime/library").Decimal;
         monthlyRate: import("@prisma/client/runtime/library").Decimal;
@@ -25,6 +34,9 @@ export declare class AssetsController {
         ownerId: string;
         categoryId: string | null;
     })[]>;
+    uploadFiles(req: any, files: any[]): Promise<{
+        urls: string[];
+    }>;
     findMine(req: any, query: AssetQueryDto): Promise<({
         category: {
             name: string;
@@ -35,6 +47,15 @@ export declare class AssetsController {
         name: string;
         description: string;
         imageUrl: string;
+        make: string | null;
+        model: string | null;
+        year: number | null;
+        color: string | null;
+        mileage: number | null;
+        transmission: string | null;
+        fuelType: string | null;
+        seats: number | null;
+        images: string[];
         dailyRate: import("@prisma/client/runtime/library").Decimal;
         weeklyRate: import("@prisma/client/runtime/library").Decimal;
         monthlyRate: import("@prisma/client/runtime/library").Decimal;
@@ -63,6 +84,15 @@ export declare class AssetsController {
         name: string;
         description: string;
         imageUrl: string;
+        make: string | null;
+        model: string | null;
+        year: number | null;
+        color: string | null;
+        mileage: number | null;
+        transmission: string | null;
+        fuelType: string | null;
+        seats: number | null;
+        images: string[];
         dailyRate: import("@prisma/client/runtime/library").Decimal;
         weeklyRate: import("@prisma/client/runtime/library").Decimal;
         monthlyRate: import("@prisma/client/runtime/library").Decimal;
@@ -85,6 +115,15 @@ export declare class AssetsController {
         name: string;
         description: string;
         imageUrl: string;
+        make: string | null;
+        model: string | null;
+        year: number | null;
+        color: string | null;
+        mileage: number | null;
+        transmission: string | null;
+        fuelType: string | null;
+        seats: number | null;
+        images: string[];
         dailyRate: import("@prisma/client/runtime/library").Decimal;
         weeklyRate: import("@prisma/client/runtime/library").Decimal;
         monthlyRate: import("@prisma/client/runtime/library").Decimal;
@@ -107,6 +146,15 @@ export declare class AssetsController {
         name: string;
         description: string;
         imageUrl: string;
+        make: string | null;
+        model: string | null;
+        year: number | null;
+        color: string | null;
+        mileage: number | null;
+        transmission: string | null;
+        fuelType: string | null;
+        seats: number | null;
+        images: string[];
         dailyRate: import("@prisma/client/runtime/library").Decimal;
         weeklyRate: import("@prisma/client/runtime/library").Decimal;
         monthlyRate: import("@prisma/client/runtime/library").Decimal;

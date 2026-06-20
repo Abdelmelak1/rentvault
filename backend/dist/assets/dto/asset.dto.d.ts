@@ -3,6 +3,15 @@ export declare class CreateAssetDto {
     description?: string;
     categoryId?: string;
     imageUrl?: string;
+    make?: string;
+    model?: string;
+    year?: number;
+    color?: string;
+    mileage?: number;
+    transmission?: string;
+    fuelType?: string;
+    seats?: number;
+    images?: string[];
     dailyRate?: number;
     weeklyRate?: number;
     monthlyRate?: number;

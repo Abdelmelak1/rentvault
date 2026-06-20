@@ -102,6 +102,26 @@ export interface CreateAssetPayload {
   condition?: string;
   status?: string;
   location?: string;
+  // Vehicle fields
+  make?: string;
+  model?: string;
+  year?: number;
+  color?: string;
+  mileage?: number;
+  transmission?: string;
+  fuelType?: string;
+  seats?: number;
+  images?: string[];
+  // Real estate fields
+  propertyType?: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  areaSqft?: number;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  amenities?: string[];
 }
 export const assets = {
   list: (params?: { status?: string; categorySlug?: string; search?: string }) => {
@@ -115,6 +135,24 @@ export const assets = {
   get: (id: string) => request<Asset>(`/assets/${id}`),
   create: (payload: CreateAssetPayload) =>
     request<Asset>('/assets', { method: 'POST', body: JSON.stringify(payload) }),
+  uploadImages: (files: File[]) => {
+    const form = new FormData();
+    files.forEach((f) => form.append('images', f, f.name));
+    const token = typeof window !== 'undefined' ? localStorage.getItem('rv_token') : null;
+    return fetch(`${API}/assets/upload`, {
+      method: 'POST',
+      body: form,
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }).then(async (res) => {
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: res.statusText }));
+        throw new Error(err.message || 'Upload failed');
+      }
+      return res.json();
+    });
+  },
   update: (id: string, payload: Partial<CreateAssetPayload>) =>
     request<Asset>(`/assets/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
   remove: (id: string) =>

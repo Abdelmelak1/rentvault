@@ -14,6 +14,15 @@ export interface Asset {
   name: string;
   description: string;
   image_url: string;
+  images?: string[];
+  make?: string;
+  model?: string;
+  year?: number;
+  color?: string;
+  mileage?: number;
+  transmission?: string;
+  fuel_type?: string;
+  seats?: number;
   daily_rate: number;
   weekly_rate: number;
   monthly_rate: number;

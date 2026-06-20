@@ -62,6 +62,15 @@ export declare class RentalsController {
             name: string;
             description: string;
             imageUrl: string;
+            make: string | null;
+            model: string | null;
+            year: number | null;
+            color: string | null;
+            mileage: number | null;
+            transmission: string | null;
+            fuelType: string | null;
+            seats: number | null;
+            images: string[];
             dailyRate: import("@prisma/client/runtime/library").Decimal;
             weeklyRate: import("@prisma/client/runtime/library").Decimal;
             monthlyRate: import("@prisma/client/runtime/library").Decimal;
