@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { rentals as rentalApi, assets as assetApi, categories as catApi, Rental, Asset } from "@/lib/api";
+import {
+  rentals as rentalApi,
+  assets as assetApi,
+  categories as catApi,
+  Rental,
+  Asset,
+} from "@/lib/api";
 import { carsData } from "@/data/cars";
 import { realEstateData } from "@/data/real-estate";
 import { calculateCarRent } from "@/utils";
@@ -20,7 +26,9 @@ export default function CreateRentalPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
 
   const [assets, setAssets] = useState<Asset[]>([]);
-  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(assetIdFromQs);
+  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(
+    assetIdFromQs,
+  );
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [notes, setNotes] = useState("");
@@ -55,7 +63,12 @@ export default function CreateRentalPage() {
               const payload: any = {
                 name: `${car.make} ${car.model} ${car.year}`,
                 description: `${car.make} ${car.model} - ${car.class}`,
-                dailyRate: calculateCarRent(car.city_mpg, car.year, car.cylinders, car.displacement),
+                dailyRate: calculateCarRent(
+                  car.city_mpg,
+                  car.year,
+                  car.cylinders,
+                  car.displacement,
+                ),
                 condition: "good",
                 status: "available",
                 location: "",
@@ -117,15 +130,24 @@ export default function CreateRentalPage() {
         }
       }
     }
-    assetApi.mine().then(setAssets).catch(() => setAssets([]));
+    assetApi
+      .mine()
+      .then(setAssets)
+      .catch(() => setAssets([]));
   }, [isAuthenticated]);
 
   if (!authLoading && !isAuthenticated) {
     return (
       <div className="py-24 text-center">
         <h2 className="text-lg font-semibold">Sign in to create a rental</h2>
-        <p className="mt-2 text-sm text-slate-500">You need an account to request rentals.</p>
-        <div className="mt-4"><Link href="/login" className="text-blue-600">Sign in</Link></div>
+        <p className="mt-2 text-sm text-slate-500">
+          You need an account to request rentals.
+        </p>
+        <div className="mt-4">
+          <Link href="/login" className="text-blue-600">
+            Sign in
+          </Link>
+        </div>
       </div>
     );
   }
@@ -133,10 +155,16 @@ export default function CreateRentalPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!selectedAssetId || !startDate || !endDate) return setError("Select asset and dates");
+    if (!selectedAssetId || !startDate || !endDate)
+      return setError("Select asset and dates");
     setLoading(true);
     try {
-      await rentalApi.create({ assetId: selectedAssetId, startDate, endDate, notes });
+      await rentalApi.create({
+        assetId: selectedAssetId,
+        startDate,
+        endDate,
+        notes,
+      });
       router.push("/rentals");
     } catch (err: any) {
       setError(err.message || "Failed to create rental");
@@ -155,24 +183,46 @@ export default function CreateRentalPage() {
             <div className="rounded-lg border p-3 bg-white">
               <div className="flex items-center gap-3">
                 {assets[0].imageUrl ? (
-                  <img src={assets[0].imageUrl} alt={assets[0].name} className="h-16 w-20 rounded-md object-cover" />
+                  <img
+                    src={assets[0].imageUrl}
+                    alt={assets[0].name}
+                    className="h-16 w-20 rounded-md object-cover"
+                  />
                 ) : (
                   <div className="h-16 w-20 rounded-md bg-slate-100" />
                 )}
                 <div className="flex-1">
-                  <div className="text-sm font-semibold text-slate-900">{assets[0].name}</div>
-                  <div className="text-xs text-slate-500">{assets[0].category?.name || ''}</div>
+                  <div className="text-sm font-semibold text-slate-900">
+                    {assets[0].name}
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    {assets[0].category?.name || ""}
+                  </div>
                 </div>
-                <button type="button" onClick={() => setSelectedAssetId(null)} className="text-sm text-blue-600">Change</button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedAssetId(null)}
+                  className="text-sm text-blue-600"
+                >
+                  Change
+                </button>
               </div>
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-medium mb-1">Select Asset</label>
-              <select value={selectedAssetId || ""} onChange={(e) => setSelectedAssetId(e.target.value || null)} className="w-full rounded-lg border px-3 py-2">
+              <label className="block text-sm font-medium mb-1">
+                Select Asset
+              </label>
+              <select
+                value={selectedAssetId || ""}
+                onChange={(e) => setSelectedAssetId(e.target.value || null)}
+                className="w-full rounded-lg border px-3 py-2"
+              >
                 <option value="">-- choose an asset --</option>
                 {assets.map((a) => (
-                  <option key={a.id} value={a.id}>{a.name} {a.category?.slug ? `(${a.category.slug})` : ''}</option>
+                  <option key={a.id} value={a.id}>
+                    {a.name} {a.category?.slug ? `(${a.category.slug})` : ""}
+                  </option>
                 ))}
               </select>
             </div>
@@ -180,22 +230,47 @@ export default function CreateRentalPage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium mb-1">Start Date</label>
-              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full rounded-lg border px-3 py-2" />
+              <label className="block text-sm font-medium mb-1">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">End Date</label>
-              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full rounded-lg border px-3 py-2" />
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full rounded-lg border px-3 py-2"
+              />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Notes (optional)</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full rounded-lg border px-3 py-2" />
+            <label className="block text-sm font-medium mb-1">
+              Notes (optional)
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={3}
+              className="w-full rounded-lg border px-3 py-2"
+            />
           </div>
 
           <div className="flex justify-end">
-            <button type="submit" disabled={loading} className="rounded-lg bg-slate-900 text-white px-4 py-2">{loading ? 'Requesting...' : 'Request Rental'}</button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-lg bg-slate-900 text-white px-4 py-2"
+            >
+              {loading ? "Requesting..." : "Request Rental"}
+            </button>
           </div>
         </form>
       </div>

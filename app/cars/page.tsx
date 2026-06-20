@@ -17,7 +17,13 @@ import {
   driveOptions,
   transmissionOptions,
 } from "@/constants";
-import { SlidersHorizontal, RotateCcw, SearchX, ChartBar as BarChart3, Car } from "lucide-react";
+import {
+  SlidersHorizontal,
+  RotateCcw,
+  SearchX,
+  ChartBar as BarChart3,
+  Car,
+} from "lucide-react";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -52,7 +58,7 @@ export default function CarsPage() {
           cylinders: a.cylinders || 0,
           displacement: a.displacement || 0,
           drive: a.drive || "",
-          fuel_type: (a.fuelType || a.fuel_type) || "gasoline",
+          fuel_type: a.fuelType || a.fuel_type || "gasoline",
           highway_mpg: a.highway_mpg || 0,
           make: a.make || "",
           model: a.model || "",
@@ -63,14 +69,19 @@ export default function CarsPage() {
         setRemoteCars(mapped);
       })
       .catch(() => {});
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const mergedCars = useMemo(() => [...remoteCars, ...carsData], [remoteCars]);
-  const filteredCars = useMemo(() => filterCars(mergedCars, filters), [mergedCars, filters]);
+  const filteredCars = useMemo(
+    () => filterCars(mergedCars, filters),
+    [mergedCars, filters],
+  );
   const displayedCars = useMemo(
     () => generatePaginationArray(filteredCars, filters.limit),
-    [filteredCars, filters.limit]
+    [filteredCars, filters.limit],
   );
 
   const isNext = filteredCars.length > filters.limit;
@@ -108,9 +119,12 @@ export default function CarsPage() {
 
   const totalCars = mergedCars.length;
   const avgMpg = Math.round(
-    mergedCars.reduce((sum, c) => sum + c.combination_mpg, 0) / Math.max(1, mergedCars.length)
+    mergedCars.reduce((sum, c) => sum + c.combination_mpg, 0) /
+      Math.max(1, mergedCars.length),
   );
-  const electricCount = mergedCars.filter((c) => c.fuel_type === "electricity").length;
+  const electricCount = mergedCars.filter(
+    (c) => c.fuel_type === "electricity",
+  ).length;
   const hybridCount = mergedCars.filter((c) => c.fuel_type === "hybrid").length;
 
   return (
@@ -155,7 +169,9 @@ export default function CarsPage() {
               <BarChart3 className="h-5 w-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{electricCount}</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {electricCount}
+              </p>
               <p className="text-xs text-slate-500">Electric Vehicles</p>
             </div>
           </div>
@@ -179,12 +195,22 @@ export default function CarsPage() {
           manufacturer={filters.manufacturer}
           model={filters.model}
           onManufacturerChange={(value) =>
-            setFilters((prev) => ({ ...prev, manufacturer: value, limit: ITEMS_PER_PAGE }))
+            setFilters((prev) => ({
+              ...prev,
+              manufacturer: value,
+              limit: ITEMS_PER_PAGE,
+            }))
           }
           onModelChange={(value) =>
-            setFilters((prev) => ({ ...prev, model: value, limit: ITEMS_PER_PAGE }))
+            setFilters((prev) => ({
+              ...prev,
+              model: value,
+              limit: ITEMS_PER_PAGE,
+            }))
           }
-          onSearch={() => setFilters((prev) => ({ ...prev, limit: ITEMS_PER_PAGE }))}
+          onSearch={() =>
+            setFilters((prev) => ({ ...prev, limit: ITEMS_PER_PAGE }))
+          }
         />
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -193,7 +219,11 @@ export default function CarsPage() {
             options={fuelOptions}
             value={filters.fuel}
             onChange={(value) =>
-              setFilters((prev) => ({ ...prev, fuel: value, limit: ITEMS_PER_PAGE }))
+              setFilters((prev) => ({
+                ...prev,
+                fuel: value,
+                limit: ITEMS_PER_PAGE,
+              }))
             }
           />
           <CustomFilter
@@ -213,7 +243,11 @@ export default function CarsPage() {
             options={classOptions}
             value={filters.vehicleClass}
             onChange={(value) =>
-              setFilters((prev) => ({ ...prev, vehicleClass: value, limit: ITEMS_PER_PAGE }))
+              setFilters((prev) => ({
+                ...prev,
+                vehicleClass: value,
+                limit: ITEMS_PER_PAGE,
+              }))
             }
           />
           <CustomFilter
@@ -221,7 +255,11 @@ export default function CarsPage() {
             options={driveOptions}
             value={filters.drive}
             onChange={(value) =>
-              setFilters((prev) => ({ ...prev, drive: value, limit: ITEMS_PER_PAGE }))
+              setFilters((prev) => ({
+                ...prev,
+                drive: value,
+                limit: ITEMS_PER_PAGE,
+              }))
             }
           />
           <CustomFilter
@@ -229,7 +267,11 @@ export default function CarsPage() {
             options={transmissionOptions}
             value={filters.transmission}
             onChange={(value) =>
-              setFilters((prev) => ({ ...prev, transmission: value, limit: ITEMS_PER_PAGE }))
+              setFilters((prev) => ({
+                ...prev,
+                transmission: value,
+                limit: ITEMS_PER_PAGE,
+              }))
             }
           />
         </div>
@@ -237,7 +279,8 @@ export default function CarsPage() {
         {hasActiveFilters && (
           <div className="flex items-center justify-between pt-2">
             <p className="text-sm text-slate-500">
-              {filteredCars.length} vehicle{filteredCars.length !== 1 ? "s" : ""} found
+              {filteredCars.length} vehicle
+              {filteredCars.length !== 1 ? "s" : ""} found
             </p>
             <button
               onClick={handleReset}
@@ -255,7 +298,11 @@ export default function CarsPage() {
         <>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {displayedCars.map((car) => (
-              <CarCard key={car.id} car={car} onViewDetails={handleViewDetails} />
+              <CarCard
+                key={car.id}
+                car={car}
+                onViewDetails={handleViewDetails}
+              />
             ))}
           </div>
           <ShowMore
@@ -269,9 +316,12 @@ export default function CarsPage() {
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
             <SearchX className="h-8 w-8 text-slate-400" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-900">Oops, no results</h3>
+          <h3 className="text-lg font-semibold text-slate-900">
+            Oops, no results
+          </h3>
           <p className="mt-1 text-sm text-slate-500">
-            Try adjusting your search or filter to find what you&apos;re looking for
+            Try adjusting your search or filter to find what you&apos;re looking
+            for
           </p>
           <button
             onClick={handleReset}

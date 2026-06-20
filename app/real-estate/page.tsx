@@ -15,7 +15,14 @@ import {
   bedroomOptions,
   bathroomOptions,
 } from "@/constants/real-estate";
-import { Building2, RotateCcw, SearchX, ChartBar as BarChart3, DollarSign, Chrome as Home } from "lucide-react";
+import {
+  Building2,
+  RotateCcw,
+  SearchX,
+  ChartBar as BarChart3,
+  DollarSign,
+  Chrome as Home,
+} from "lucide-react";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -31,9 +38,12 @@ export default function RealEstatePage() {
     limit: ITEMS_PER_PAGE,
   });
 
-  const [selectedProperty, setSelectedProperty] = useState<RealEstateProps | null>(null);
+  const [selectedProperty, setSelectedProperty] =
+    useState<RealEstateProps | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [remoteProperties, setRemoteProperties] = useState<RealEstateProps[]>([]);
+  const [remoteProperties, setRemoteProperties] = useState<RealEstateProps[]>(
+    [],
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -49,7 +59,7 @@ export default function RealEstatePage() {
           bedrooms: a.bedrooms || 0,
           bathrooms: a.bathrooms || 0,
           area: a.areaSqft || 0,
-          city: a.city || a.location?.split(',')[0] || "",
+          city: a.city || a.location?.split(",")[0] || "",
           state: a.state || "",
           address: a.address || "",
           yearBuilt: a.yearBuilt || 0,
@@ -62,18 +72,23 @@ export default function RealEstatePage() {
         setRemoteProperties(mapped);
       })
       .catch(() => {});
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const mergedProperties = useMemo(() => [...remoteProperties, ...realEstateData], [remoteProperties]);
+  const mergedProperties = useMemo(
+    () => [...remoteProperties, ...realEstateData],
+    [remoteProperties],
+  );
   const filteredProperties = useMemo(
     () => filterRealEstate(mergedProperties, filters),
-    [mergedProperties, filters]
+    [mergedProperties, filters],
   );
 
   const displayedProperties = useMemo(
     () => filteredProperties.slice(0, filters.limit),
-    [filteredProperties, filters.limit]
+    [filteredProperties, filters.limit],
   );
 
   const isNext = filteredProperties.length > filters.limit;
@@ -110,10 +125,15 @@ export default function RealEstatePage() {
   };
 
   const totalProperties = mergedProperties.length;
-  const forSaleCount = mergedProperties.filter((p) => p.listingStatus === "for-sale").length;
-  const forRentCount = mergedProperties.filter((p) => p.listingStatus === "for-rent").length;
+  const forSaleCount = mergedProperties.filter(
+    (p) => p.listingStatus === "for-sale",
+  ).length;
+  const forRentCount = mergedProperties.filter(
+    (p) => p.listingStatus === "for-rent",
+  ).length;
   const avgPrice = Math.round(
-    mergedProperties.reduce((sum, p) => sum + p.price, 0) / Math.max(1, mergedProperties.length)
+    mergedProperties.reduce((sum, p) => sum + p.price, 0) /
+      Math.max(1, mergedProperties.length),
   );
 
   return (
@@ -121,7 +141,9 @@ export default function RealEstatePage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <Building2 className="h-6 w-6 text-blue-500" />
-          <h1 className="text-2xl font-bold text-slate-900">Real Estate Catalogue</h1>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Real Estate Catalogue
+          </h1>
         </div>
         <p className="text-sm text-slate-500">
           Browse through our collection of {totalProperties} properties
@@ -136,7 +158,9 @@ export default function RealEstatePage() {
               <Building2 className="h-5 w-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{totalProperties}</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {totalProperties}
+              </p>
               <p className="text-xs text-slate-500">Total Properties</p>
             </div>
           </div>
@@ -147,7 +171,9 @@ export default function RealEstatePage() {
               <Home className="h-5 w-5 text-emerald-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{forSaleCount}</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {forSaleCount}
+              </p>
               <p className="text-xs text-slate-500">For Sale</p>
             </div>
           </div>
@@ -158,7 +184,9 @@ export default function RealEstatePage() {
               <DollarSign className="h-5 w-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{forRentCount}</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {forRentCount}
+              </p>
               <p className="text-xs text-slate-500">For Rent</p>
             </div>
           </div>
@@ -192,7 +220,11 @@ export default function RealEstatePage() {
             options={propertyTypeOptions}
             value={filters.type}
             onChange={(value) =>
-              setFilters((prev) => ({ ...prev, type: value, limit: ITEMS_PER_PAGE }))
+              setFilters((prev) => ({
+                ...prev,
+                type: value,
+                limit: ITEMS_PER_PAGE,
+              }))
             }
           />
           <CustomFilter
@@ -200,13 +232,19 @@ export default function RealEstatePage() {
             options={listingStatusOptions}
             value={filters.listingStatus}
             onChange={(value) =>
-              setFilters((prev) => ({ ...prev, listingStatus: value, limit: ITEMS_PER_PAGE }))
+              setFilters((prev) => ({
+                ...prev,
+                listingStatus: value,
+                limit: ITEMS_PER_PAGE,
+              }))
             }
           />
           <CustomFilter
             title="Bedrooms"
             options={bedroomOptions}
-            value={filters.bedrooms !== undefined ? String(filters.bedrooms) : ""}
+            value={
+              filters.bedrooms !== undefined ? String(filters.bedrooms) : ""
+            }
             onChange={(value) =>
               setFilters((prev) => ({
                 ...prev,
@@ -218,7 +256,9 @@ export default function RealEstatePage() {
           <CustomFilter
             title="Bathrooms"
             options={bathroomOptions}
-            value={filters.bathrooms !== undefined ? String(filters.bathrooms) : ""}
+            value={
+              filters.bathrooms !== undefined ? String(filters.bathrooms) : ""
+            }
             onChange={(value) =>
               setFilters((prev) => ({
                 ...prev,
@@ -233,7 +273,11 @@ export default function RealEstatePage() {
               placeholder="City..."
               value={filters.city}
               onChange={(e) =>
-                setFilters((prev) => ({ ...prev, city: e.target.value, limit: ITEMS_PER_PAGE }))
+                setFilters((prev) => ({
+                  ...prev,
+                  city: e.target.value,
+                  limit: ITEMS_PER_PAGE,
+                }))
               }
               className="w-full rounded-xl border border-slate-200 bg-white py-3 px-4 text-sm text-slate-700 shadow-sm transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             />
@@ -243,7 +287,8 @@ export default function RealEstatePage() {
         {hasActiveFilters && (
           <div className="flex items-center justify-between pt-2">
             <p className="text-sm text-slate-500">
-              {filteredProperties.length} propert{filteredProperties.length !== 1 ? "ies" : "y"} found
+              {filteredProperties.length} propert
+              {filteredProperties.length !== 1 ? "ies" : "y"} found
             </p>
             <button
               onClick={handleReset}
@@ -279,7 +324,9 @@ export default function RealEstatePage() {
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
             <SearchX className="h-8 w-8 text-slate-400" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-900">Oops, no results</h3>
+          <h3 className="text-lg font-semibold text-slate-900">
+            Oops, no results
+          </h3>
           <p className="mt-1 text-sm text-slate-500">
             Try adjusting your filters to find what you&apos;re looking for
           </p>

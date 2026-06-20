@@ -186,9 +186,13 @@ export default function UploadAssetPage() {
           vehicleClass: form.vehicleClass || undefined,
           cityMpg: form.cityMpg ? parseInt(form.cityMpg) : undefined,
           highwayMpg: form.highwayMpg ? parseInt(form.highwayMpg) : undefined,
-          combinationMpg: form.combinationMpg ? parseInt(form.combinationMpg) : undefined,
+          combinationMpg: form.combinationMpg
+            ? parseInt(form.combinationMpg)
+            : undefined,
           cylinders: form.cylinders ? parseInt(form.cylinders) : undefined,
-          displacement: form.displacement ? parseFloat(form.displacement) : undefined,
+          displacement: form.displacement
+            ? parseFloat(form.displacement)
+            : undefined,
           drive: form.drive || undefined,
         });
       } else {
@@ -721,28 +725,77 @@ function VehicleFields({
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Vehicle Class</label>
-          <input type="text" value={form.vehicleClass} onChange={(e) => updateField("vehicleClass", e.target.value)} placeholder="e.g., compact car" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Vehicle Class
+          </label>
+          <input
+            type="text"
+            value={form.vehicleClass}
+            onChange={(e) => updateField("vehicleClass", e.target.value)}
+            placeholder="e.g., compact car"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+          />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Drive</label>
-          <input type="text" value={form.drive} onChange={(e) => updateField("drive", e.target.value)} placeholder="e.g., fwd" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Drive
+          </label>
+          <input
+            type="text"
+            value={form.drive}
+            onChange={(e) => updateField("drive", e.target.value)}
+            placeholder="e.g., fwd"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+          />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">City MPG</label>
-          <input type="number" value={form.cityMpg} onChange={(e) => updateField("cityMpg", e.target.value)} placeholder="e.g., 29" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            City MPG
+          </label>
+          <input
+            type="number"
+            value={form.cityMpg}
+            onChange={(e) => updateField("cityMpg", e.target.value)}
+            placeholder="e.g., 29"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+          />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Highway MPG</label>
-          <input type="number" value={form.highwayMpg} onChange={(e) => updateField("highwayMpg", e.target.value)} placeholder="e.g., 35" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Highway MPG
+          </label>
+          <input
+            type="number"
+            value={form.highwayMpg}
+            onChange={(e) => updateField("highwayMpg", e.target.value)}
+            placeholder="e.g., 35"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+          />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Cylinders</label>
-          <input type="number" value={form.cylinders} onChange={(e) => updateField("cylinders", e.target.value)} placeholder="e.g., 4" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Cylinders
+          </label>
+          <input
+            type="number"
+            value={form.cylinders}
+            onChange={(e) => updateField("cylinders", e.target.value)}
+            placeholder="e.g., 4"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+          />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Displacement (L)</label>
-          <input type="number" step="0.1" value={form.displacement} onChange={(e) => updateField("displacement", e.target.value)} placeholder="e.g., 2.5" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Displacement (L)
+          </label>
+          <input
+            type="number"
+            step="0.1"
+            value={form.displacement}
+            onChange={(e) => updateField("displacement", e.target.value)}
+            placeholder="e.g., 2.5"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+          />
         </div>
       </div>
     </div>
@@ -892,28 +945,71 @@ function RealEstateFields({
         </div>
         <div className="grid grid-cols-2 gap-4 mt-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Listing Status</label>
-            <select value={form.listingStatus} onChange={(e) => updateField("listingStatus", e.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              Listing Status
+            </label>
+            <select
+              value={form.listingStatus}
+              onChange={(e) => updateField("listingStatus", e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+            >
               <option value="">Select...</option>
               <option value="for-rent">For Rent</option>
               <option value="for-sale">For Sale</option>
             </select>
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Price (optional)</label>
-            <input type="number" value={form.price} onChange={(e) => updateField("price", e.target.value)} placeholder="e.g., 2500" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              Price (optional)
+            </label>
+            <input
+              type="number"
+              value={form.price}
+              onChange={(e) => updateField("price", e.target.value)}
+              placeholder="e.g., 2500"
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+            />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Year Built</label>
-            <input type="number" value={form.yearBuilt} onChange={(e) => updateField("yearBuilt", e.target.value)} placeholder="e.g., 2005" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              Year Built
+            </label>
+            <input
+              type="number"
+              value={form.yearBuilt}
+              onChange={(e) => updateField("yearBuilt", e.target.value)}
+              placeholder="e.g., 2005"
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+            />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Garage (spaces)</label>
-            <input type="number" value={form.garage} onChange={(e) => updateField("garage", e.target.value)} placeholder="e.g., 1" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700" />
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              Garage (spaces)
+            </label>
+            <input
+              type="number"
+              value={form.garage}
+              onChange={(e) => updateField("garage", e.target.value)}
+              placeholder="e.g., 1"
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
+            />
           </div>
           <div className="flex items-center gap-3">
-            <input id="hasPool" type="checkbox" checked={Boolean(form.hasPool)} onChange={(e) => updateField("hasPool", e.target.checked ? "true" : "")} className="h-4 w-4" />
-            <label htmlFor="hasPool" className="text-sm font-medium text-slate-700">Has Pool</label>
+            <input
+              id="hasPool"
+              type="checkbox"
+              checked={Boolean(form.hasPool)}
+              onChange={(e) =>
+                updateField("hasPool", e.target.checked ? "true" : "")
+              }
+              className="h-4 w-4"
+            />
+            <label
+              htmlFor="hasPool"
+              className="text-sm font-medium text-slate-700"
+            >
+              Has Pool
+            </label>
           </div>
         </div>
       </div>

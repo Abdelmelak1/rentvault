@@ -139,25 +139,43 @@ export class AssetsService {
         ...(dto.status && { status: dto.status as any }),
         ...(dto.location !== undefined && { location: dto.location }),
         ...(dto.categoryId !== undefined && { categoryId: dto.categoryId }),
-        ...(dto.vehicleClass !== undefined && { vehicleClass: (dto as any).vehicleClass }),
+        ...(dto.vehicleClass !== undefined && {
+          vehicleClass: (dto as any).vehicleClass,
+        }),
         ...(dto.cityMpg !== undefined && { cityMpg: (dto as any).cityMpg }),
-        ...(dto.highwayMpg !== undefined && { highwayMpg: (dto as any).highwayMpg }),
-        ...(dto.combinationMpg !== undefined && { combinationMpg: (dto as any).combinationMpg }),
-        ...(dto.cylinders !== undefined && { cylinders: (dto as any).cylinders }),
-        ...(dto.displacement !== undefined && { displacement: (dto as any).displacement }),
+        ...(dto.highwayMpg !== undefined && {
+          highwayMpg: (dto as any).highwayMpg,
+        }),
+        ...(dto.combinationMpg !== undefined && {
+          combinationMpg: (dto as any).combinationMpg,
+        }),
+        ...(dto.cylinders !== undefined && {
+          cylinders: (dto as any).cylinders,
+        }),
+        ...(dto.displacement !== undefined && {
+          displacement: (dto as any).displacement,
+        }),
         ...(dto.drive !== undefined && { drive: (dto as any).drive }),
-        ...(dto.propertyType !== undefined && { propertyType: (dto as any).propertyType }),
+        ...(dto.propertyType !== undefined && {
+          propertyType: (dto as any).propertyType,
+        }),
         ...(dto.bedrooms !== undefined && { bedrooms: (dto as any).bedrooms }),
-        ...(dto.bathrooms !== undefined && { bathrooms: (dto as any).bathrooms }),
+        ...(dto.bathrooms !== undefined && {
+          bathrooms: (dto as any).bathrooms,
+        }),
         ...(dto.areaSqft !== undefined && { areaSqft: (dto as any).areaSqft }),
         ...(dto.address !== undefined && { address: (dto as any).address }),
         ...(dto.city !== undefined && { city: (dto as any).city }),
         ...(dto.state !== undefined && { state: (dto as any).state }),
         ...(dto.zipCode !== undefined && { zipCode: (dto as any).zipCode }),
-        ...(dto.yearBuilt !== undefined && { yearBuilt: (dto as any).yearBuilt }),
+        ...(dto.yearBuilt !== undefined && {
+          yearBuilt: (dto as any).yearBuilt,
+        }),
         ...(dto.garage !== undefined && { garage: (dto as any).garage }),
         ...(dto.hasPool !== undefined && { hasPool: (dto as any).hasPool }),
-        ...(dto.listingStatus !== undefined && { listingStatus: (dto as any).listingStatus }),
+        ...(dto.listingStatus !== undefined && {
+          listingStatus: (dto as any).listingStatus,
+        }),
         ...(dto.price !== undefined && { price: (dto as any).price }),
       },
       include: { category: { select: { name: true, slug: true } } },

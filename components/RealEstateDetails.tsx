@@ -22,7 +22,11 @@ interface RealEstateDetailsProps {
   onClose: () => void;
 }
 
-function RealEstateDetails({ property, isOpen, onClose }: RealEstateDetailsProps) {
+function RealEstateDetails({
+  property,
+  isOpen,
+  onClose,
+}: RealEstateDetailsProps) {
   if (!isOpen || !property) return null;
 
   const {
@@ -44,11 +48,19 @@ function RealEstateDetails({ property, isOpen, onClose }: RealEstateDetailsProps
 
   const details = [
     { icon: Tag, label: "Type", value: formatPropertyType(type) },
-    { icon: Bed, label: "Bedrooms", value: bedrooms === 0 ? "Studio" : `${bedrooms}` },
+    {
+      icon: Bed,
+      label: "Bedrooms",
+      value: bedrooms === 0 ? "Studio" : `${bedrooms}`,
+    },
     { icon: Bath, label: "Bathrooms", value: `${bathrooms}` },
     { icon: Maximize, label: "Area", value: `${area.toLocaleString()} ft²` },
     { icon: Calendar, label: "Year Built", value: `${yearBuilt}` },
-    { icon: Car, label: "Garage", value: garage > 0 ? `${garage} Car${garage > 1 ? "s" : ""}` : "None" },
+    {
+      icon: Car,
+      label: "Garage",
+      value: garage > 0 ? `${garage} Car${garage > 1 ? "s" : ""}` : "None",
+    },
     { icon: Waves, label: "Pool", value: hasPool ? "Yes" : "No" },
     { icon: MapPin, label: "Location", value: `${city}, ${state}` },
   ];
@@ -75,11 +87,13 @@ function RealEstateDetails({ property, isOpen, onClose }: RealEstateDetailsProps
             </div>
           </div>
           <div className="absolute top-4 right-4 flex items-center gap-2">
-            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold shadow-lg ${
-              listingStatus === "for-sale"
-                ? "bg-emerald-500 text-white"
-                : "bg-blue-500 text-white"
-            }`}>
+            <span
+              className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold shadow-lg ${
+                listingStatus === "for-sale"
+                  ? "bg-emerald-500 text-white"
+                  : "bg-blue-500 text-white"
+              }`}
+            >
               {listingStatus === "for-sale" ? "For Sale" : "For Rent"}
             </span>
             <span className="inline-flex items-center rounded-full bg-slate-900 px-3 py-1.5 text-sm font-bold text-white shadow-lg">
@@ -119,7 +133,12 @@ function RealEstateDetails({ property, isOpen, onClose }: RealEstateDetailsProps
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <Link href={`/rentals/create?catalog=real-estate&catalogId=${property.id}`} className="w-full text-center rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white transition-all hover:bg-emerald-500">Rent Property</Link>
+            <Link
+              href={`/rentals/create?catalog=real-estate&catalogId=${property.id}`}
+              className="w-full text-center rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white transition-all hover:bg-emerald-500"
+            >
+              Rent Property
+            </Link>
             <button
               onClick={onClose}
               className="w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"

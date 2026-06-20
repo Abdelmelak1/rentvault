@@ -8,12 +8,7 @@ import {
   formatFuelType,
 } from "@/utils";
 import { CAR_IMAGE_PLACEHOLDER } from "@/constants";
-import {
-  Gauge,
-  Fuel,
-  Settings2,
-  Car,
-} from "lucide-react";
+import { Gauge, Fuel, Settings2, Car } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface CarCardProps {
@@ -120,7 +115,9 @@ function CarCard({ car, onViewDetails }: CarCardProps) {
             View Details
           </button>
           <button
-            onClick={() => router.push(`/rentals/create?catalog=cars&catalogId=${car.id}`)}
+            onClick={() =>
+              router.push(`/rentals/create?catalog=cars&catalogId=${car.id}`)
+            }
             className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition-all hover:bg-emerald-500 active:scale-[0.98]"
           >
             Rent
