@@ -105,11 +105,16 @@ model Rental {
   securityDeposit Decimal      @default(0) @map("security_deposit")
   status          RentalStatus @default(pending)
   notes           String       @default("")
+  // snapshot fields for rentals that don't reference a persisted Asset
+  snapshotTitle    String?     @map("snapshot_title")
+  snapshotImageUrl String?     @map("snapshot_image_url")
+  snapshotOwnerName String?    @map("snapshot_owner_name")
+  snapshotOwnerEmail String?   @map("snapshot_owner_email")
+  snapshotOwnerPhone String?   @map("snapshot_owner_phone")
   createdAt       DateTime     @default(now()) @map("created_at")
   updatedAt       DateTime     @updatedAt @map("updated_at")
-
-  assetId  String @map("asset_id")
-  asset    Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  assetId  String? @map("asset_id")
+  asset    Asset?  @relation(fields: [assetId], references: [id], onDelete: Cascade)
   renterId String @map("renter_id")
   renter   User   @relation(fields: [renterId], references: [id], onDelete: Cascade)
 
@@ -135,6 +140,7 @@ enum Condition {
 }
 
 enum AssetStatus {
+  pending
   available
   rented
   maintenance

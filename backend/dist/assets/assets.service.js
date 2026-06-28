@@ -66,7 +66,7 @@ let AssetsService = class AssetsService {
         return asset;
     }
     async create(ownerId, dto) {
-        return this.prisma.asset.create({
+        const created = await this.prisma.asset.create({
             data: {
                 name: dto.name,
                 description: dto.description || "",
@@ -112,6 +112,12 @@ let AssetsService = class AssetsService {
             },
             include: { category: { select: { name: true, slug: true } } },
         });
+        try {
+            console.log(`[Asset Created] ownerId=${ownerId} assetId=${created.id} status=${created.status} name=${created.name}`);
+        }
+        catch (e) {
+        }
+        return created;
     }
     async update(id, userId, dto) {
         await this.verifyOwner(id, userId);
@@ -142,25 +148,43 @@ let AssetsService = class AssetsService {
                 ...(dto.status && { status: dto.status }),
                 ...(dto.location !== undefined && { location: dto.location }),
                 ...(dto.categoryId !== undefined && { categoryId: dto.categoryId }),
-                ...(dto.vehicleClass !== undefined && { vehicleClass: dto.vehicleClass }),
+                ...(dto.vehicleClass !== undefined && {
+                    vehicleClass: dto.vehicleClass,
+                }),
                 ...(dto.cityMpg !== undefined && { cityMpg: dto.cityMpg }),
-                ...(dto.highwayMpg !== undefined && { highwayMpg: dto.highwayMpg }),
-                ...(dto.combinationMpg !== undefined && { combinationMpg: dto.combinationMpg }),
-                ...(dto.cylinders !== undefined && { cylinders: dto.cylinders }),
-                ...(dto.displacement !== undefined && { displacement: dto.displacement }),
+                ...(dto.highwayMpg !== undefined && {
+                    highwayMpg: dto.highwayMpg,
+                }),
+                ...(dto.combinationMpg !== undefined && {
+                    combinationMpg: dto.combinationMpg,
+                }),
+                ...(dto.cylinders !== undefined && {
+                    cylinders: dto.cylinders,
+                }),
+                ...(dto.displacement !== undefined && {
+                    displacement: dto.displacement,
+                }),
                 ...(dto.drive !== undefined && { drive: dto.drive }),
-                ...(dto.propertyType !== undefined && { propertyType: dto.propertyType }),
+                ...(dto.propertyType !== undefined && {
+                    propertyType: dto.propertyType,
+                }),
                 ...(dto.bedrooms !== undefined && { bedrooms: dto.bedrooms }),
-                ...(dto.bathrooms !== undefined && { bathrooms: dto.bathrooms }),
+                ...(dto.bathrooms !== undefined && {
+                    bathrooms: dto.bathrooms,
+                }),
                 ...(dto.areaSqft !== undefined && { areaSqft: dto.areaSqft }),
                 ...(dto.address !== undefined && { address: dto.address }),
                 ...(dto.city !== undefined && { city: dto.city }),
                 ...(dto.state !== undefined && { state: dto.state }),
                 ...(dto.zipCode !== undefined && { zipCode: dto.zipCode }),
-                ...(dto.yearBuilt !== undefined && { yearBuilt: dto.yearBuilt }),
+                ...(dto.yearBuilt !== undefined && {
+                    yearBuilt: dto.yearBuilt,
+                }),
                 ...(dto.garage !== undefined && { garage: dto.garage }),
                 ...(dto.hasPool !== undefined && { hasPool: dto.hasPool }),
-                ...(dto.listingStatus !== undefined && { listingStatus: dto.listingStatus }),
+                ...(dto.listingStatus !== undefined && {
+                    listingStatus: dto.listingStatus,
+                }),
                 ...(dto.price !== undefined && { price: dto.price }),
             },
             include: { category: { select: { name: true, slug: true } } },

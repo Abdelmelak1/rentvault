@@ -1,13 +1,14 @@
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateRentalDto, UpdateRentalStatusDto } from './dto/rental.dto';
+import { PrismaService } from "../prisma/prisma.service";
+import { CreateRentalDto, UpdateRentalStatusDto } from "./dto/rental.dto";
 export declare class RentalsService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(renterId: string, dto: CreateRentalDto): Promise<{
+    create(renterId: string, dto: CreateRentalDto): Promise<({
         asset: {
             name: string;
             imageUrl: string;
             dailyRate: import("@prisma/client/runtime/library").Decimal;
+            ownerId: string;
         };
     } & {
         id: string;
@@ -17,35 +18,96 @@ export declare class RentalsService {
         securityDeposit: import("@prisma/client/runtime/library").Decimal;
         status: import(".prisma/client").$Enums.RentalStatus;
         notes: string;
+        snapshotTitle: string | null;
+        snapshotImageUrl: string | null;
+        snapshotOwnerName: string | null;
+        snapshotOwnerEmail: string | null;
+        snapshotOwnerPhone: string | null;
         createdAt: Date;
         updatedAt: Date;
-        assetId: string;
+        assetId: string | null;
         renterId: string;
-    }>;
+    }) | ({
+        renter: {
+            email: string;
+            fullName: string;
+            id: string;
+        };
+    } & {
+        id: string;
+        startDate: Date;
+        endDate: Date;
+        totalPrice: import("@prisma/client/runtime/library").Decimal;
+        securityDeposit: import("@prisma/client/runtime/library").Decimal;
+        status: import(".prisma/client").$Enums.RentalStatus;
+        notes: string;
+        snapshotTitle: string | null;
+        snapshotImageUrl: string | null;
+        snapshotOwnerName: string | null;
+        snapshotOwnerEmail: string | null;
+        snapshotOwnerPhone: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        assetId: string | null;
+        renterId: string;
+    })>;
     findMyRentals(renterId: string): Promise<({
         asset: {
             category: {
                 slug: string;
             };
+            owner: {
+                email: string;
+                fullName: string;
+                id: string;
+                avatarUrl: string;
+                phone: string;
+            };
+        } & {
+            id: string;
             name: string;
             description: string;
-            state: string;
             imageUrl: string;
-            make: string;
-            model: string;
-            year: number;
-            propertyType: string;
-            bedrooms: number;
-            bathrooms: number;
-            address: string;
-            city: string;
-            mileage: number;
-            transmission: string;
-            fuelType: string;
-            seats: number;
+            make: string | null;
+            model: string | null;
+            year: number | null;
+            color: string | null;
+            mileage: number | null;
+            transmission: string | null;
+            fuelType: string | null;
+            seats: number | null;
+            vehicleClass: string | null;
+            cityMpg: number | null;
+            highwayMpg: number | null;
+            combinationMpg: number | null;
+            cylinders: number | null;
+            displacement: number | null;
+            drive: string | null;
+            propertyType: string | null;
+            bedrooms: number | null;
+            bathrooms: number | null;
+            areaSqft: number | null;
+            address: string | null;
+            city: string | null;
+            state: string | null;
+            zipCode: string | null;
+            yearBuilt: number | null;
+            garage: number | null;
+            hasPool: boolean | null;
+            listingStatus: string | null;
+            price: import("@prisma/client/runtime/library").Decimal | null;
+            images: string[];
             dailyRate: import("@prisma/client/runtime/library").Decimal;
+            weeklyRate: import("@prisma/client/runtime/library").Decimal;
+            monthlyRate: import("@prisma/client/runtime/library").Decimal;
+            securityDeposit: import("@prisma/client/runtime/library").Decimal;
             condition: import(".prisma/client").$Enums.Condition;
+            status: import(".prisma/client").$Enums.AssetStatus;
             location: string;
+            createdAt: Date;
+            updatedAt: Date;
+            ownerId: string;
+            categoryId: string | null;
         };
     } & {
         id: string;
@@ -55,9 +117,76 @@ export declare class RentalsService {
         securityDeposit: import("@prisma/client/runtime/library").Decimal;
         status: import(".prisma/client").$Enums.RentalStatus;
         notes: string;
+        snapshotTitle: string | null;
+        snapshotImageUrl: string | null;
+        snapshotOwnerName: string | null;
+        snapshotOwnerEmail: string | null;
+        snapshotOwnerPhone: string | null;
         createdAt: Date;
         updatedAt: Date;
-        assetId: string;
+        assetId: string | null;
+        renterId: string;
+    })[]>;
+    findIncomingRequests(ownerId: string): Promise<({
+        asset: {
+            name: string;
+            id: string;
+            imageUrl: string;
+            location: string;
+        };
+        renter: {
+            email: string;
+            fullName: string;
+            id: string;
+            avatarUrl: string;
+        };
+    } & {
+        id: string;
+        startDate: Date;
+        endDate: Date;
+        totalPrice: import("@prisma/client/runtime/library").Decimal;
+        securityDeposit: import("@prisma/client/runtime/library").Decimal;
+        status: import(".prisma/client").$Enums.RentalStatus;
+        notes: string;
+        snapshotTitle: string | null;
+        snapshotImageUrl: string | null;
+        snapshotOwnerName: string | null;
+        snapshotOwnerEmail: string | null;
+        snapshotOwnerPhone: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        assetId: string | null;
+        renterId: string;
+    })[]>;
+    findByOwner(ownerId: string, status?: string): Promise<({
+        asset: {
+            name: string;
+            id: string;
+            imageUrl: string;
+            ownerId: string;
+        };
+        renter: {
+            email: string;
+            fullName: string;
+            id: string;
+            avatarUrl: string;
+        };
+    } & {
+        id: string;
+        startDate: Date;
+        endDate: Date;
+        totalPrice: import("@prisma/client/runtime/library").Decimal;
+        securityDeposit: import("@prisma/client/runtime/library").Decimal;
+        status: import(".prisma/client").$Enums.RentalStatus;
+        notes: string;
+        snapshotTitle: string | null;
+        snapshotImageUrl: string | null;
+        snapshotOwnerName: string | null;
+        snapshotOwnerEmail: string | null;
+        snapshotOwnerPhone: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        assetId: string | null;
         renterId: string;
     })[]>;
     findOne(id: string, userId: string): Promise<{
@@ -74,6 +203,8 @@ export declare class RentalsService {
                 email: string;
                 fullName: string;
                 id: string;
+                avatarUrl: string;
+                phone: string;
             };
         } & {
             id: string;
@@ -134,9 +265,14 @@ export declare class RentalsService {
         securityDeposit: import("@prisma/client/runtime/library").Decimal;
         status: import(".prisma/client").$Enums.RentalStatus;
         notes: string;
+        snapshotTitle: string | null;
+        snapshotImageUrl: string | null;
+        snapshotOwnerName: string | null;
+        snapshotOwnerEmail: string | null;
+        snapshotOwnerPhone: string | null;
         createdAt: Date;
         updatedAt: Date;
-        assetId: string;
+        assetId: string | null;
         renterId: string;
     }>;
     updateStatus(id: string, userId: string, dto: UpdateRentalStatusDto): Promise<{
@@ -147,9 +283,14 @@ export declare class RentalsService {
         securityDeposit: import("@prisma/client/runtime/library").Decimal;
         status: import(".prisma/client").$Enums.RentalStatus;
         notes: string;
+        snapshotTitle: string | null;
+        snapshotImageUrl: string | null;
+        snapshotOwnerName: string | null;
+        snapshotOwnerEmail: string | null;
+        snapshotOwnerPhone: string | null;
         createdAt: Date;
         updatedAt: Date;
-        assetId: string;
+        assetId: string | null;
         renterId: string;
     }>;
 }

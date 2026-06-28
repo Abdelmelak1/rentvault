@@ -45,7 +45,7 @@ export default function LoginPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900">
               <Warehouse className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-900">RentVault</span>
+            <span className="text-xl font-bold text-slate-900">AssetZ</span>
           </Link>
           <h1 className="text-2xl font-bold text-slate-900">
             {mode === "login" ? "Welcome back" : "Create your account"}
@@ -53,7 +53,7 @@ export default function LoginPage() {
           <p className="mt-1 text-sm text-slate-500">
             {mode === "login"
               ? "Sign in to manage your assets and rentals"
-              : "Join thousands renting and earning with RentVault"}
+              : "Join thousands discovering and managing assets with AssetZ"}
           </p>
         </div>
 

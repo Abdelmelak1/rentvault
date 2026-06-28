@@ -1,7 +1,7 @@
 {
-  "name": "rentvault-api",
+  "name": "assetz-api",
   "version": "1.0.0",
-  "description": "RentVault NestJS API backend",
+  "description": "AssetZ NestJS API backend",
   "private": true,
   "scripts": {
     "build": "npx tsc --project tsconfig.build.json --incremental false",

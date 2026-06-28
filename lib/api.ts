@@ -203,15 +203,26 @@ export const rentals = {
   list: () => request<Rental[]>("/rentals"),
   get: (id: string) => request<Rental>(`/rentals/${id}`),
   create: (payload: {
-    assetId: string;
+    assetId?: string;
     startDate: string;
     endDate: string;
     notes?: string;
+    // optional snapshot fields for non-persisted/catalog items
+    snapshotTitle?: string;
+    snapshotImageUrl?: string;
+    snapshotOwnerName?: string;
+    snapshotOwnerEmail?: string;
+    snapshotOwnerPhone?: string;
+    snapshotDailyRate?: number;
+    snapshotSecurityDeposit?: number;
   }) =>
     request<Rental>("/rentals", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  requests: () => request<Rental[]>("/rentals/requests"),
+  owner: (status?: string) =>
+    request<Rental[]>(`/rentals/owner${status ? `?status=${encodeURIComponent(status)}` : ""}`),
   updateStatus: (id: string, status: string) =>
     request<Rental>(`/rentals/${id}/status`, {
       method: "PATCH",

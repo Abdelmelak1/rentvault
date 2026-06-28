@@ -28,6 +28,13 @@ let RentalsController = class RentalsController {
     findMine(req) {
         return this.service.findMyRentals(req.user.id);
     }
+    findIncoming(req) {
+        return this.service.findIncomingRequests(req.user.id);
+    }
+    findByOwner(req) {
+        const status = req.query?.status;
+        return this.service.findByOwner(req.user.id, status);
+    }
     findOne(id, req) {
         return this.service.findOne(id, req.user.id);
     }
@@ -53,6 +60,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], RentalsController.prototype, "findMine", null);
+__decorate([
+    (0, common_1.Get)('requests'),
+    (0, swagger_1.ApiOperation)({ summary: "Get incoming rental requests for owner's assets" }),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], RentalsController.prototype, "findIncoming", null);
+__decorate([
+    (0, common_1.Get)('owner'),
+    (0, swagger_1.ApiOperation)({ summary: "Get rentals for assets owned by current user" }),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], RentalsController.prototype, "findByOwner", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Get a single rental by ID' }),

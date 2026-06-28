@@ -32,6 +32,19 @@ export class RentalsController {
     return this.service.findMyRentals(req.user.id);
   }
 
+  @Get('requests')
+  @ApiOperation({ summary: "Get incoming rental requests for owner's assets" })
+  findIncoming(@Request() req) {
+    return this.service.findIncomingRequests(req.user.id);
+  }
+
+  @Get('owner')
+  @ApiOperation({ summary: "Get rentals for assets owned by current user" })
+  findByOwner(@Request() req) {
+    const status = req.query?.status as string | undefined;
+    return this.service.findByOwner(req.user.id, status);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get a single rental by ID' })
   findOne(@Param('id') id: string, @Request() req) {

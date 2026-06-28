@@ -68,7 +68,7 @@ function Sidebar() {
               <Warehouse className="h-4 w-4 text-white" />
             </div>
             <span className="text-base font-bold text-slate-900 tracking-tight">
-              RentVault
+              AssetZ
             </span>
           </Link>
         )}

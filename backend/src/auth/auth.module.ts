@@ -11,7 +11,7 @@ import { GithubStrategy } from './strategies/github.strategy';
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'rentvault-secret',
+      secret: process.env.JWT_SECRET || 'assetz-secret',
       signOptions: { expiresIn: '7d' },
     }),
   ],

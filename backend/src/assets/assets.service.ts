@@ -60,7 +60,7 @@ export class AssetsService {
   }
 
   async create(ownerId: string, dto: CreateAssetDto) {
-    return this.prisma.asset.create({
+    const created = await this.prisma.asset.create({
       data: {
         name: dto.name,
         description: dto.description || "",
@@ -108,6 +108,15 @@ export class AssetsService {
       },
       include: { category: { select: { name: true, slug: true } } },
     });
+
+    // Debug: log created asset summary
+    try {
+      console.log(`[Asset Created] ownerId=${ownerId} assetId=${created.id} status=${created.status} name=${created.name}`);
+    } catch (e) {
+      // ignore logging errors
+    }
+
+    return created;
   }
 
   async update(id: string, userId: string, dto: UpdateAssetDto) {

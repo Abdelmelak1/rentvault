@@ -7,9 +7,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "RentVault - Rent Anything, Earn Everything",
+  title: "AssetZ - Discover and Manage Assets",
   description:
-    "The all-in-one asset rental platform. Upload vehicles, properties, equipment, and more. Browse, rent, and manage everything in one place.",
+    "The all-in-one asset platform. Upload vehicles, properties, equipment, and more. Discover, manage, and transact in one place.",
   openGraph: {
     images: [{ url: "/og_default.png" }],
   },

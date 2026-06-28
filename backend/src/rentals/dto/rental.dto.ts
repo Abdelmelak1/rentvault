@@ -3,9 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class CreateRentalDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
-  assetId: string;
+  assetId?: string;
 
   @ApiProperty({ example: '2026-06-20' })
   @IsDateString()
@@ -19,6 +20,44 @@ export class CreateRentalDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  // Optional snapshot fields when requesting a non-persisted/catalog item
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  snapshotTitle?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  snapshotImageUrl?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  snapshotOwnerName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  snapshotOwnerEmail?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  snapshotOwnerPhone?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  snapshotDailyRate?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  snapshotSecurityDeposit?: number;
 }
 
 export class UpdateRentalStatusDto {

@@ -23,12 +23,13 @@ export default function CreateRentalPage() {
   const assetIdFromQs = params?.get("assetId") || null;
   const catalog = params?.get("catalog") || null;
   const catalogId = params?.get("catalogId") || null;
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading, user } = useAuth();
 
   const [assets, setAssets] = useState<Asset[]>([]);
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(
     assetIdFromQs,
   );
+  const [snapshot, setSnapshot] = useState<any | null>(null);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [notes, setNotes] = useState("");
@@ -49,92 +50,64 @@ export default function CreateRentalPage() {
       return;
     }
 
-    // If catalog params provided (catalog listing), create asset from catalog item if needed
+    // If catalog params provided (catalog listing), prepare a snapshot (don't create DB asset)
     if (catalog && catalogId) {
       // find catalog item
       let created = null as any;
       if (catalog === "cars") {
         const car = carsData.find((c) => c.id === catalogId);
         if (car) {
-          (async () => {
-            try {
-              const cats = await catApi.list();
-              const vehicleCat = cats.find((c) => c.slug === "vehicles");
-              const payload: any = {
-                name: `${car.make} ${car.model} ${car.year}`,
-                description: `${car.make} ${car.model} - ${car.class}`,
-                dailyRate: calculateCarRent(
-                  car.city_mpg,
-                  car.year,
-                  car.cylinders,
-                  car.displacement,
-                ),
-                condition: "good",
-                status: "available",
-                location: "",
-                imageUrl: CAR_IMAGE_PLACEHOLDER,
-                make: car.make,
-                model: car.model,
-                year: car.year,
-                mileage: null,
-                transmission: car.transmission,
-                fuelType: car.fuel_type,
-                seats: null,
-                categoryId: vehicleCat?.id,
-              };
-              created = await assetApi.create(payload);
-              setAssets([created]);
-              setSelectedAssetId(created.id);
-            } catch (e) {
-              // fallback to empty
-              setAssets([]);
-            }
-          })();
+          // prepare snapshot for rental (no DB asset creation)
+          const daily = calculateCarRent(
+            car.city_mpg,
+            car.year,
+            car.cylinders,
+            car.displacement,
+          );
+          setSnapshot({
+            snapshotTitle: `${car.make} ${car.model} ${car.year}`,
+            snapshotImageUrl: CAR_IMAGE_PLACEHOLDER,
+            snapshotDailyRate: daily,
+            snapshotSecurityDeposit: 0,
+            snapshotOwnerName: "Catalog",
+            snapshotOwnerEmail: "",
+          });
+          setAssets([]);
+          setSelectedAssetId(null);
           return;
         }
       }
       if (catalog === "real-estate") {
         const prop = realEstateData.find((p) => p.id === catalogId);
         if (prop) {
-          (async () => {
-            try {
-              const cats = await catApi.list();
-              const propCat = cats.find((c) => c.slug === "real-estate");
-              const payload: any = {
-                name: prop.title,
-                description: prop.description || "",
-                dailyRate: 0,
-                monthlyRate: prop.price || 0,
-                condition: "good",
-                status: "available",
-                location: `${prop.city}, ${prop.state}`,
-                imageUrl: REAL_ESTATE_IMAGE,
-                propertyType: prop.type,
-                bedrooms: prop.bedrooms,
-                bathrooms: prop.bathrooms,
-                areaSqft: prop.area,
-                address: prop.address,
-                city: prop.city,
-                state: prop.state,
-                zipCode: "",
-                categoryId: propCat?.id,
-              };
-              created = await assetApi.create(payload);
-              setAssets([created]);
-              setSelectedAssetId(created.id);
-            } catch (e) {
-              setAssets([]);
-            }
-          })();
+          // prepare snapshot for rental (no DB asset creation)
+          setSnapshot({
+            snapshotTitle: prop.title,
+            snapshotImageUrl: REAL_ESTATE_IMAGE,
+            snapshotDailyRate: prop.price || 0,
+            snapshotSecurityDeposit: 0,
+            snapshotOwnerName: "Catalog",
+            snapshotOwnerEmail: "",
+          });
+          setAssets([]);
+          setSelectedAssetId(null);
           return;
         }
       }
     }
+    // fetch all available assets so other users can request rentals
     assetApi
-      .mine()
-      .then(setAssets)
+      .list({ status: "available" })
+      .then((list) => {
+        // hide assets owned by current user
+        if (user?.id) {
+          setAssets(list.filter((a) => a.ownerId !== user.id));
+        } else {
+          setAssets(list);
+        }
+      })
       .catch(() => setAssets([]));
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.id]);
 
   if (!authLoading && !isAuthenticated) {
     return (
@@ -155,16 +128,27 @@ export default function CreateRentalPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!selectedAssetId || !startDate || !endDate)
-      return setError("Select asset and dates");
+    if (!startDate || !endDate)
+      return setError("Select dates");
+    if (!selectedAssetId && !snapshot) return setError("Select asset or snapshot and dates");
     setLoading(true);
     try {
-      await rentalApi.create({
-        assetId: selectedAssetId,
-        startDate,
-        endDate,
-        notes,
-      });
+      if (selectedAssetId) {
+        await rentalApi.create({ assetId: selectedAssetId, startDate, endDate, notes });
+      } else if (snapshot) {
+        await rentalApi.create({
+          startDate,
+          endDate,
+          notes,
+          snapshotTitle: snapshot.snapshotTitle,
+          snapshotImageUrl: snapshot.snapshotImageUrl,
+          snapshotOwnerName: snapshot.snapshotOwnerName,
+          snapshotOwnerEmail: snapshot.snapshotOwnerEmail,
+          snapshotOwnerPhone: snapshot.snapshotOwnerPhone,
+          snapshotDailyRate: snapshot.snapshotDailyRate,
+          snapshotSecurityDeposit: snapshot.snapshotSecurityDeposit,
+        });
+      }
       router.push("/rentals");
     } catch (err: any) {
       setError(err.message || "Failed to create rental");
@@ -208,23 +192,52 @@ export default function CreateRentalPage() {
                 </button>
               </div>
             </div>
+          ) : snapshot ? (
+            <div className="rounded-lg border p-3 bg-white">
+              <div className="flex items-center gap-3">
+                {snapshot.snapshotImageUrl ? (
+                  <img src={snapshot.snapshotImageUrl} alt={snapshot.snapshotTitle} className="h-16 w-20 rounded-md object-cover" />
+                ) : (
+                  <div className="h-16 w-20 rounded-md bg-slate-100" />
+                )}
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-slate-900">{snapshot.snapshotTitle}</div>
+                  <div className="text-xs text-slate-500">Catalog item</div>
+                </div>
+                <button type="button" onClick={() => { setSnapshot(null); setSelectedAssetId(null); }} className="text-sm text-blue-600">Change</button>
+              </div>
+            </div>
           ) : (
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Select Asset
-              </label>
-              <select
-                value={selectedAssetId || ""}
-                onChange={(e) => setSelectedAssetId(e.target.value || null)}
-                className="w-full rounded-lg border px-3 py-2"
-              >
-                <option value="">-- choose an asset --</option>
-                {assets.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name} {a.category?.slug ? `(${a.category.slug})` : ""}
-                  </option>
-                ))}
-              </select>
+            <div className="space-y-3">
+              {assets.length === 0 ? (
+                <div className="text-sm text-slate-500">No available assets to request.</div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {assets.map((a) => (
+                    <div key={a.id} className="rounded-lg border p-3 bg-white flex items-center gap-3">
+                      {a.imageUrl ? (
+                        <img src={a.imageUrl} alt={a.name} className="h-20 w-28 rounded-md object-cover" />
+                      ) : (
+                        <div className="h-20 w-28 rounded-md bg-slate-100" />
+                      )}
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">{a.name}</div>
+                        <div className="text-xs text-slate-500">{a.category?.name || a.category?.slug}</div>
+                        <div className="text-sm font-bold mt-1">${Number(a.dailyRate || 0).toFixed(0)}/day</div>
+                      </div>
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => { setSelectedAssetId(a.id); setSnapshot(null); }}
+                          className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white"
+                        >
+                          Request
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

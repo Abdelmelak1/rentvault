@@ -38,7 +38,7 @@ async function bootstrap() {
 
   // Swagger documentation
   const config = new DocumentBuilder()
-    .setTitle("RentVault API")
+    .setTitle("AssetZ API")
     .setDescription("Asset rental platform REST API")
     .setVersion("1.0")
     .addBearerAuth()
@@ -48,7 +48,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
-  console.log(`RentVault API running on http://localhost:${port}`);
+  console.log(`AssetZ API running on http://localhost:${port}`);
   console.log(`Swagger docs: http://localhost:${port}/api/docs`);
 }
 bootstrap();
